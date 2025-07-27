@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+
+<div class="container mt-4">
+
+    <h2>All Users by Role</h2>
+
+    <h4 class="mt-4">Customers</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr><th>Username</th><th>Email</th><th>Phone</th></tr>
+        </thead>
+        <tbody>
+            {% for user in customers %}
+            <tr><td>{{ user.username }}</td><td>{{ user.email }}</td><td>{{ user.contact_number }}</td></tr>
+            {% empty %}
+            <tr><td colspan="3">No customers found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4 class="mt-4">Waste Collectors</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr><th>Username</th><th>Email</th><th>Phone</th></tr>
+        </thead>
+        <tbody>
+            {% for user in collectors %}
+            <tr><td>{{ user.username }}</td><td>{{ user.email }}</td><td>{{ user.contact_number }}</td></tr>
+            {% empty %}
+            <tr><td colspan="3">No collectors found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4 class="mt-4">Admins</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr><th>Username</th><th>Email</th><th>Phone</th></tr>
+        </thead>
+        <tbody>
+            {% for user in admins %}
+            <tr><td>{{ user.username }}</td><td>{{ user.email }}</td><td>{{ user.contact_number }}</td></tr>
+            {% empty %}
+            <tr><td colspan="3">No admins found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<a href="{% url 'admin_dashboard:admin_dashboard' %}">⬅ Back</a>
+
+
+</body>
+</html>

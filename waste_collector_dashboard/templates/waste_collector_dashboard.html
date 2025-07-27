@@ -1,0 +1,1383 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Waste Collector Dashboard</title>-->
+
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        body { padding: 30px; background-color: #f7f7f7; }-->
+<!--        .card { border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }-->
+<!--        h2 { margin-bottom: 20px; }-->
+<!--          .navbar-right {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 1rem;-->
+<!--        }-->
+<!--          .logout-btn {-->
+<!--            background: rgba(255,255,255,0.2);-->
+<!--            border: none;-->
+<!--            color: red;-->
+<!--            padding: 0.5rem 1rem;-->
+<!--            border-radius: 6px;-->
+<!--            cursor: pointer;-->
+<!--            transition: all 0.3s ease;-->
+<!--            text-decoration: none;-->
+<!--            font-size: 0.9rem;-->
+
+<!--        }-->
+
+<!--        .logout-btn:hover {-->
+<!--            background: rgba(255,255,255,0.3);-->
+<!--        }-->
+<!--           .navbar-right {-->
+<!--                gap: 0.5rem;-->
+<!--            }-->
+
+<!--            .logout-btn {-->
+<!--                padding: 0.4rem 0.8rem;-->
+<!--                font-size: 0.8rem;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="container">-->
+<!--        <h2 class="text-center">Waste Collector Dashboard</h2>-->
+<!--         <div class="navbar-right">-->
+<!--            <a href="{% url 'authentication:logout' %}" class="logout-btn">-->
+<!--                🚪 Logout-->
+<!--            </a>-->
+<!--        </div>-->
+<!--        <div class="text-end mb-3">-->
+<!--            <a href="{% url 'waste_collector:waste_collect_create' %}" class="btn btn-success">+ Add Waste Info</a>-->
+<!--        </div>-->
+
+<!--        {% if waste_entries %}-->
+<!--            <table class="table table-striped table-bordered">-->
+<!--                <thead class="table-dark">-->
+<!--                    <tr>-->
+<!--                        <th>#</th>-->
+<!--                        <th>Customer</th>-->
+<!--                        <th>Municipality</th>-->
+<!--                        <th>Ward</th>-->
+<!--                        <th>Location</th>-->
+<!--                        <th>Building No</th>-->
+<!--                        <th>Street</th>-->
+<!--                        <th>KG</th>-->
+<!--                        <th>Total (₹)</th>-->
+<!--                        <th>Photo</th>-->
+<!--                        <th>Actions</th>-->
+<!--                    </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                    {% for waste in waste_entries %}-->
+<!--                    <tr>-->
+<!--                        <td>{{ forloop.counter }}</td>-->
+<!--                        <td>{{ waste.customer.username }}</td>-->
+<!--                        <td>{{ waste.municipality }}</td>-->
+<!--                        <td>{{ waste.ward }}</td>-->
+<!--                        <td>{{ waste.location }}</td>-->
+<!--                        <td>{{ waste.building_no }}</td>-->
+<!--                        <td>{{ waste.street_name }}</td>-->
+<!--                        <td>{{ waste.kg }}</td>-->
+<!--                        <td>₹{{ waste.total_amount }}</td>-->
+<!--                        <td>-->
+<!--                            {% if waste.photo %}-->
+<!--                                <img src="{{ waste.photo.url }}" alt="Photo" width="50" height="50">-->
+<!--                            {% else %}-->
+<!--                                No Image-->
+<!--                            {% endif %}-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <a href="{% url 'waste_collector:waste_collect_update' waste.pk %}" class="btn btn-sm btn-primary">Edit</a>-->
+<!--                            <a href="{% url 'waste_collector:waste_collect_delete' waste.pk %}" class="btn btn-sm btn-danger">Delete</a>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    {% endfor %}-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--        {% else %}-->
+<!--            <p>No waste collection records found.</p>-->
+<!--        {% endif %}-->
+<!--    </div>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Waste Collector Dashboard</title>-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            padding: 30px;-->
+<!--            background: linear-gradient(135deg, #e8f5e8 0%, #e0f2f1 100%);-->
+<!--            min-height: 100vh;-->
+<!--        }-->
+
+<!--        .header-section {-->
+<!--            background: linear-gradient(135deg, #4caf50 0%, #26a69a 100%);-->
+<!--            color: white;-->
+<!--            padding: 2rem;-->
+<!--            border-radius: 15px;-->
+<!--            margin-bottom: 2rem;-->
+<!--            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);-->
+<!--        }-->
+
+<!--        .dashboard-title {-->
+<!--            margin: 0;-->
+<!--            font-weight: 600;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .navbar-right {-->
+<!--            display: flex;-->
+<!--            justify-content: flex-end;-->
+<!--            margin-top: 1rem;-->
+<!--        }-->
+
+<!--        .logout-btn {-->
+<!--            background: rgba(255,255,255,0.2);-->
+<!--            border: 2px solid rgba(255,255,255,0.3);-->
+<!--            color: white;-->
+<!--            padding: 0.6rem 1.2rem;-->
+<!--            border-radius: 8px;-->
+<!--            cursor: pointer;-->
+<!--            transition: all 0.3s ease;-->
+<!--            text-decoration: none;-->
+<!--            font-size: 0.9rem;-->
+<!--            font-weight: 500;-->
+<!--        }-->
+
+<!--        .logout-btn:hover {-->
+<!--            background: rgba(255,255,255,0.3);-->
+<!--            color: white;-->
+<!--            border-color: rgba(255,255,255,0.5);-->
+<!--            transform: translateY(-2px);-->
+<!--        }-->
+
+<!--        .add-btn {-->
+<!--            background: linear-gradient(135deg, #66bb6a 0%, #4db6ac 100%);-->
+<!--            border: none;-->
+<!--            color: white;-->
+<!--            padding: 0.7rem 1.5rem;-->
+<!--            border-radius: 8px;-->
+<!--            font-weight: 500;-->
+<!--            text-decoration: none;-->
+<!--            transition: all 0.3s ease;-->
+<!--            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);-->
+<!--        }-->
+
+<!--        .add-btn:hover {-->
+<!--            background: linear-gradient(135deg, #5cb85c 0%, #26a69a 100%);-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .table-container {-->
+<!--            background: white;-->
+<!--            border-radius: 12px;-->
+<!--            padding: 1.5rem;-->
+<!--            box-shadow: 0 4px 15px rgba(0,0,0,0.1);-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        .table {-->
+<!--            margin: 0;-->
+<!--            border-radius: 8px;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        .table thead th {-->
+<!--            background: linear-gradient(135deg, #4caf50 0%, #26a69a 100%);-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            padding: 1rem 0.8rem;-->
+<!--            font-weight: 500;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .table tbody tr {-->
+<!--            transition: all 0.2s ease;-->
+<!--        }-->
+
+<!--        .table tbody tr:hover {-->
+<!--            background-color: rgba(76, 175, 80, 0.1);-->
+<!--            transform: scale(1.01);-->
+<!--        }-->
+
+<!--        .table tbody td {-->
+<!--            padding: 0.8rem;-->
+<!--            vertical-align: middle;-->
+<!--            border-color: rgba(76, 175, 80, 0.2);-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .btn-primary {-->
+<!--            background: linear-gradient(135deg, #26a69a 0%, #4db6ac 100%);-->
+<!--            border: none;-->
+<!--            border-radius: 6px;-->
+<!--            font-size: 0.85rem;-->
+<!--            padding: 0.4rem 0.8rem;-->
+<!--            transition: all 0.3s ease;-->
+<!--        }-->
+
+<!--        .btn-primary:hover {-->
+<!--            background: linear-gradient(135deg, #00897b 0%, #26a69a 100%);-->
+<!--            transform: translateY(-1px);-->
+<!--        }-->
+
+<!--        .btn-danger {-->
+<!--            background: linear-gradient(135deg, #e57373 0%, #ef5350 100%);-->
+<!--            border: none;-->
+
+<!--Maria (CEK), [25-07-2025 15:13]-->
+<!--border-radius: 6px;-->
+<!--            font-size: 0.85rem;-->
+<!--            padding: 0.4rem 0.8rem;-->
+<!--            transition: all 0.3s ease;-->
+<!--        }-->
+
+<!--        .btn-danger:hover {-->
+<!--            background: linear-gradient(135deg, #d32f2f 0%, #e57373 100%);-->
+<!--            transform: translateY(-1px);-->
+<!--        }-->
+
+<!--        .waste-photo {-->
+<!--            border-radius: 8px;-->
+<!--            border: 2px solid rgba(76, 175, 80, 0.3);-->
+<!--            transition: transform 0.3s ease;-->
+<!--        }-->
+
+<!--        .waste-photo:hover {-->
+<!--            transform: scale(1.1);-->
+<!--        }-->
+
+<!--        .no-records {-->
+<!--            text-align: center;-->
+<!--            color: #666;-->
+<!--            font-size: 1.1rem;-->
+<!--            padding: 3rem;-->
+<!--            background: white;-->
+<!--            border-radius: 12px;-->
+<!--            box-shadow: 0 4px 15px rgba(0,0,0,0.1);-->
+<!--        }-->
+
+<!--        .action-buttons {-->
+<!--            display: flex;-->
+<!--            gap: 0.5rem;-->
+<!--            justify-content: center;-->
+<!--        }-->
+
+<!--        @media (max-width: 768px) {-->
+<!--            .navbar-right {-->
+<!--                gap: 0.5rem;-->
+<!--            }-->
+
+<!--            .logout-btn {-->
+<!--                padding: 0.4rem 0.8rem;-->
+<!--                font-size: 0.8rem;-->
+<!--            }-->
+
+<!--            .table-container {-->
+<!--                overflow-x: auto;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="container">-->
+<!--        <div class="header-section">-->
+<!--            <h2 class="dashboard-title">🗂️ Waste Collector Dashboard</h2>-->
+<!--            <div class="navbar-right">-->
+<!--                <a href="{% url 'authentication:logout' %}" class="logout-btn">-->
+<!--                    🚪 Logout-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="text-end mb-3">-->
+<!--            <a href="{% url 'waste_collector:waste_collect_create' %}" class="add-btn">-->
+<!--                ➕ Add Waste Info-->
+<!--            </a>-->
+<!--        </div>-->
+
+<!--        {% if waste_entries %}-->
+<!--            <div class="table-container">-->
+<!--                <table class="table table-striped">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>#</th>-->
+<!--                            <th>Customer</th>-->
+<!--                            <th>Municipality</th>-->
+<!--                            <th>Ward</th>-->
+<!--                            <th>Location</th>-->
+<!--                            <th>Building No</th>-->
+<!--                            <th>Street</th>-->
+<!--                            <th>KG</th>-->
+<!--                            <th>Total (₹)</th>-->
+<!--                            <th>Photo</th>-->
+<!--                            <th>Actions</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        {% for waste in waste_entries %}-->
+<!--                        <tr>-->
+<!--                            <td><strong>{{ forloop.counter }}</strong></td>-->
+<!--                            <td>{{ waste.customer.username }}</td>-->
+<!--                            <td>{{ waste.municipality }}</td>-->
+<!--                            <td>{{ waste.ward }}</td>-->
+<!--                            <td>{{ waste.location }}</td>-->
+<!--                            <td>{{ waste.building_no }}</td>-->
+<!--                            <td>{{ waste.street_name }}</td>-->
+<!--                            <td><strong>{{ waste.kg }}</strong></td>-->
+<!--                            <td><strong style="color: #4caf50;">₹{{ waste.total_amount }}</strong></td>-->
+<!--                            <td>-->
+<!--                                {% if waste.photo %}-->
+<!--                                    <img src="{{ waste.photo.url }}" alt="Waste Photo" width="50" height="50" class="waste-photo">-->
+<!--                                {% else %}-->
+<!--                                    <span style="color: #999;">No Image</span>-->
+<!--                                {% endif %}-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <div class="action-buttons">-->
+
+<!--Maria (CEK), [25-07-2025 15:13]-->
+<!--<a href="{% url 'waste_collector:waste_collect_update' waste.pk %}" class="btn btn-sm btn-primary">✏️ Edit</a>-->
+<!--                                    <a href="{% url 'waste_collector:waste_collect_delete' waste.pk %}" class="btn btn-sm btn-danger">🗑️ Delete</a>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        {% endfor %}-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        {% else %}-->
+<!--            <div class="no-records">-->
+<!--                <p>📋 No waste collection records found.</p>-->
+<!--                <p style="font-size: 0.9rem; color: #999;">Start by adding your first waste collection entry!</p>-->
+<!--            </div>-->
+<!--        {% endif %}-->
+<!--    </div>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waste Collector Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #e8f5e8 0%, #e0f2f1 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #4caf50 0%, #26a69a 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20px;
+            width: 100px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            transform: rotate(45deg);
+        }
+
+        .dashboard-title {
+            margin: 0;
+            font-weight: 600;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .dashboard-subtitle {
+            text-align: center;
+            margin-top: 0.5rem;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .navbar-right {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Statistics Cards */
+        .stats-section {
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(38, 166, 154, 0.1));
+            border-radius: 0 0 0 50px;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-card.total { border-left-color: #4caf50; }
+        .stat-card.today { border-left-color: #26a69a; }
+        .stat-card.weight { border-left-color: #66bb6a; }
+        .stat-card.revenue { border-left-color: #4db6ac; }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #4caf50;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4caf50, #26a69a);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .action-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #4caf50;
+        }
+
+        .action-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2e7d32;
+        }
+
+        .action-description {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* Search and Filter */
+        .search-filter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .search-input, .filter-select {
+            border: 2px solid rgba(76, 175, 80, 0.2);
+            border-radius: 8px;
+            padding: 0.7rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus, .filter-select:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table {
+            margin: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #4caf50 0%, #26a69a 100%);
+            color: white;
+            border: none;
+            padding: 1rem 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            position: relative;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(76, 175, 80, 0.1);
+            transform: scale(1.005);
+        }
+
+        .table tbody td {
+            padding: 1rem 0.8rem;
+            vertical-align: middle;
+            border-color: rgba(76, 175, 80, 0.2);
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #26a69a 0%, #4db6ac 100%);
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #00897b 0%, #26a69a 100%);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e57373 0%, #ef5350 100%);
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #d32f2f 0%, #e57373 100%);
+            transform: translateY(-1px);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-info:hover {
+            background: linear-gradient(135deg, #0288d1 0%, #4fc3f7 100%);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+            border: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+            transform: translateY(-1px);
+        }
+
+        .waste-photo {
+            border-radius: 8px;
+            border: 2px solid rgba(76, 175, 80, 0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .waste-photo:hover {
+            transform: scale(1.1);
+        }
+
+        .no-records {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            padding: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.3rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-collected {
+            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background: linear-gradient(135deg, #ffecb3 0%, #ffe082 100%);
+            color: #f57f17;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #4caf50 0%, #26a69a 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid rgba(76, 175, 80, 0.2);
+            border-radius: 8px;
+            padding: 0.7rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .dashboard-title {
+                font-size: 1.5rem;
+            }
+
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+
+            .action-card {
+                margin-bottom: 1rem;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.2rem;
+            }
+
+            .search-filter-section .row > div {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1 class="dashboard-title">
+                <i class="fas fa-recycle"></i> Waste Collector Dashboard
+            </h1>
+            <p class="dashboard-subtitle">Manage your waste collection operations efficiently</p>
+            <div class="navbar-right">
+                <a href="{% url 'authentication:logout' %}" class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="stat-card total">
+                        <div class="stat-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="stat-number" id="totalCollections">12</div>
+                        <div class="stat-label">Total Collections</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="stat-card today">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-number" id="todayCollections">5</div>
+                        <div class="stat-label">Today's Collections</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="stat-card weight">
+                        <div class="stat-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                        </div>
+                        <div class="stat-number" id="totalWeight">127</div>
+                        <div class="stat-label">Total KG Collected</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="stat-card revenue">
+                        <div class="stat-icon">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="stat-number" id="totalRevenue">₹2,540</div>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Section -->
+        <div class="quick-actions">
+            <h3 class="section-title">
+                <i class="fas fa-bolt"></i> Quick Actions
+            </h3>
+            <div class="row">
+
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="action-card" onclick="showAddCollectionModal()">
+                        <a href="{% url 'waste_collector:waste_collect_create' %}">
+                        <div class="action-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+
+    <div class="action-title">Add Collection</div>
+</a>
+                        <div class="action-description">Record new waste collection</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="action-card" onclick="scrollToTable()">
+                        <a href="{% url 'waste_collector:waste_collect_list' %}">
+                        <div class="action-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="action-title">View Records</div>
+                        </a>
+                        <div class="action-description">Browse all collections</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="action-card" onclick="showBulkOperations()">
+                        <a href="{% url 'waste_collector:assigned_customers' %}">
+                        <div class="action-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="action-title">Assigned Waste</div>
+                        </a>
+                        <div class="action-description">View assigned waste collections</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="action-card" onclick="showReports()">
+                        <div class="action-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="action-title">Generate Reports</div>
+                        <div class="action-description">View analytics & reports</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="search-filter-section">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control search-input" placeholder="Search collections..." id="searchInput">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select filter-select" id="municipalityFilter">
+                        <option value="">All Municipalities</option>
+                        <option value="Kozhikode Corporation">Kozhikode Corporation</option>
+                        <option value="Malappuram Municipality">Malappuram Municipality</option>
+                        <option value="Wayanad Panchayat">Wayanad Panchayat</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select filter-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="collected">Collected</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-success w-100" onclick="filterRecords()">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table Section -->
+        <div class="table-container" id="tableSection">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="section-title mb-0">
+                    <i class="fas fa-table"></i> Collection Records
+                </h4>
+                <div>
+                    <button class="btn btn-outline-success btn-sm" onclick="exportData()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+{% if waste_entries %}
+    <div class="table-responsive">
+        <table class="table table-striped" id="wasteTable">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-hashtag"></i> #</th>
+                    <th><i class="fas fa-user"></i> Customer</th>
+                    <th><i class="fas fa-building"></i> Municipality</th>
+                    <th><i class="fas fa-map-marker-alt"></i> Ward</th>
+                    <th><i class="fas fa-location-arrow"></i> Location</th>
+                    <th><i class="fas fa-home"></i> Building</th>
+                    <th><i class="fas fa-road"></i> Street</th>
+                    <th><i class="fas fa-weight"></i> KG</th>
+                    <th><i class="fas fa-rupee-sign"></i> Amount</th>
+                    <th><i class="fas fa-camera"></i> Photo</th>
+                    <th><i class="fas fa-info-circle"></i> Status</th>
+                    <th><i class="fas fa-cogs"></i> Actions</th>
+                </tr>
+            </thead>
+            <tbody id="wasteTableBody">
+                {% for waste in waste_entries %}
+                <tr>
+                    <td><strong>{{ forloop.counter }}</strong></td>
+                    <td>{{ waste.customer.username }}</td>
+                    <td>{{ waste.municipality }}</td>
+                    <td>{{ waste.ward }}</td>
+                    <td>{{ waste.location }}</td>
+                    <td>{{ waste.building_no }}</td>
+                    <td>{{ waste.street_name }}</td>
+                    <td><strong>{{ waste.kg }}</strong></td>
+                    <td><strong style="color: #4caf50;">₹{{ waste.total_amount }}</strong></td>
+                    <td>
+                        {% if waste.photo %}
+                            <img src="{{ waste.photo.url }}" alt="Waste Photo" width="50" height="50" class="waste-photo">
+                        {% else %}
+                            <span style="color: #999;">No Image</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ waste.status|default:"Pending" }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{% url 'waste_collector:waste_collect_update' waste.pk %}" class="btn btn-sm btn-primary">✏️ Edit</a>
+                            <a href="{% url 'waste_collector:waste_collect_delete' waste.pk %}" class="btn btn-sm btn-danger">🗑️ Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="no-records text-center mt-4">
+        <p>📋 No waste collection records found.</p>
+        <p style="font-size: 0.9rem; color: #999;">Start by adding your first waste collection entry!</p>
+    </div>
+{% endif %}
+
+    <!-- Add Collection Modal -->
+    <div class="modal fade" id="addCollectionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus-circle"></i> Add New Collection</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCollectionForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Customer Name</label>
+                                <input type="text" class="form-control" id="customerName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Municipality</label>
+                                <select class="form-select" id="municipality" required>
+                                    <option value="">Select Municipality</option>
+                                    <option value="Kozhikode Corporation">Kozhikode Corporation</option>
+                                    <option value="Malappuram Municipality">Malappuram Municipality</option>
+                                    <option value="Wayanad Panchayat">Wayanad Panchayat</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ward</label>
+                                <input type="text" class="form-control" id="ward" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-control" id="location" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Building No</label>
+                                <input type="text" class="form-control" id="buildingNo">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Street Name</label>
+                                <input type="text" class="form-control" id="streetName">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Weight (KG)</label>
+                                <input type="number" class="form-control" id="weight" step="0.1" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Amount (₹)</label>
+                                <input type="number" class="form-control" id="amount" step="0.01" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Photo</label>
+                                <input type="file" class="form-control" id="photo" accept="image/*">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="addCollection()">
+                        <i class="fas fa-save"></i> Save Collection
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Record Modal -->
+    <div class="modal fade" id="viewRecordModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-eye"></i> Collection Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="recordDetails">
+                    <!-- Record details will be populated here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-image"></i> Waste Collection Photo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="Waste Photo" class="img-fluid" style="max-height: 500px; border-radius: 10px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <title>Waste Collector Dashboard</title>-->
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">-->
+<!--  <style>-->
+<!--    body {-->
+<!--      background-color: #f8f9fa;-->
+<!--    }-->
+<!--    .dashboard-header {-->
+<!--      background-color: #2d3748;-->
+<!--      color: white;-->
+<!--      padding: 20px;-->
+<!--      text-align: center;-->
+<!--    }-->
+<!--    .stat-card {-->
+<!--      background-color: #ffffff;-->
+<!--      border-radius: 10px;-->
+<!--      padding: 20px;-->
+<!--      margin-bottom: 20px;-->
+<!--      text-align: center;-->
+<!--      box-shadow: 0 2px 4px rgba(0,0,0,0.1);-->
+<!--    }-->
+<!--    .stat-icon {-->
+<!--      font-size: 30px;-->
+<!--      margin-bottom: 10px;-->
+<!--      color: #4a90e2;-->
+<!--    }-->
+<!--    .table-container {-->
+<!--      background-color: #ffffff;-->
+<!--      padding: 20px;-->
+<!--      border-radius: 10px;-->
+<!--      box-shadow: 0 2px 4px rgba(0,0,0,0.1);-->
+<!--    }-->
+<!--    .action-btn {-->
+<!--      margin-right: 10px;-->
+<!--    }-->
+<!--    .waste-photo {-->
+<!--      width: 50px;-->
+<!--      height: 50px;-->
+<!--      object-fit: cover;-->
+<!--      border-radius: 4px;-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--  <div class="dashboard-header d-flex justify-content-between align-items-center">-->
+<!--    <h2 class="mb-0">Waste Collector Dashboard</h2>-->
+<!--    <button class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>-->
+<!--  </div>-->
+
+<!--  <div class="container my-4">-->
+
+<!--    &lt;!&ndash; Statistics &ndash;&gt;-->
+<!--    <div class="row">-->
+<!--      <div class="col-md-3">-->
+<!--        <div class="stat-card">-->
+<!--          <div class="stat-icon"><i class="fas fa-dumpster"></i></div>-->
+<!--          <h5>Total Collections</h5>-->
+<!--          <h3>1,245</h3>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-3">-->
+<!--        <div class="stat-card">-->
+<!--          <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>-->
+<!--          <h5>Today’s Collections</h5>-->
+<!--          <h3>56</h3>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-3">-->
+<!--        <div class="stat-card">-->
+<!--          <div class="stat-icon"><i class="fas fa-weight"></i></div>-->
+<!--          <h5>Total Waste Collected (KG)</h5>-->
+<!--          <h3>6,789</h3>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-3">-->
+<!--        <div class="stat-card">-->
+<!--          <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>-->
+<!--          <h5>Total Revenue</h5>-->
+<!--          <h3>₹72,500</h3>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Quick Actions &ndash;&gt;-->
+<!--    <div class="my-4 d-flex justify-content-between align-items-center flex-wrap">-->
+<!--      <div>-->
+<!--        <button class="btn btn-primary action-btn" data-bs-toggle="modal" data-bs-target="#addCollectionModal"><i class="fas fa-plus"></i> Add Collection</button>-->
+<!--        <button class="btn btn-outline-secondary action-btn"><i class="fas fa-eye"></i> View Records</button>-->
+<!--        <button class="btn btn-outline-info action-btn"><i class="fas fa-tasks"></i> Bulk Operations</button>-->
+<!--        <button class="btn btn-outline-success action-btn"><i class="fas fa-file-excel"></i> Generate Reports</button>-->
+<!--      </div>-->
+<!--      <div class="mt-2 mt-md-0">-->
+<!--        <input type="text" class="form-control" placeholder="Search by Municipality, Status...">-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Records Table &ndash;&gt;-->
+<!--    <div class="table-container">-->
+<!--      <div class="d-flex justify-content-between align-items-center mb-3">-->
+<!--        <h5>Collection Records</h5>-->
+<!--        <div>-->
+<!--          <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-sync-alt"></i> Refresh</button>-->
+<!--          <button class="btn btn-sm btn-outline-primary"><i class="fas fa-file-export"></i> Export</button>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div class="table-responsive">-->
+<!--        <table class="table table-bordered table-hover">-->
+<!--          <thead class="table-light">-->
+<!--            <tr>-->
+<!--              <th>#</th>-->
+<!--              <th>Collector</th>-->
+<!--              <th>Municipality</th>-->
+<!--              <th>Ward</th>-->
+<!--              <th>Area</th>-->
+<!--              <th>Building</th>-->
+<!--              <th>Street</th>-->
+<!--              <th>KG</th>-->
+<!--              <th>Revenue</th>-->
+<!--              <th><i class="fas fa-camera"></i> Photo</th>-->
+<!--            </tr>-->
+<!--          </thead>-->
+<!--          <tbody>-->
+<!--            <tr>-->
+<!--              <td>1</td>-->
+<!--              <td>Rahul P</td>-->
+<!--              <td>Kozhikode Corporation</td>-->
+<!--              <td>12</td>-->
+<!--              <td>Thondayad</td>-->
+<!--              <td>Green Villa</td>-->
+<!--              <td>Main Street</td>-->
+<!--              <td>12</td>-->
+<!--              <td>₹240</td>-->
+<!--              <td><img src="https://via.placeholder.com/50" alt="Photo" class="waste-photo"></td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--              <td>2</td>-->
+<!--              <td>Anjali M</td>-->
+<!--              <td>Kannur Municipality</td>-->
+<!--              <td>7</td>-->
+<!--              <td>Talap</td>-->
+<!--              <td>Blue Nest</td>-->
+<!--              <td>Park Lane</td>-->
+<!--              <td>15</td>-->
+<!--              <td>₹300</td>-->
+<!--              <td><img src="https://via.placeholder.com/50" alt="Photo" class="waste-photo"></td>-->
+<!--            </tr>-->
+<!--          </tbody>-->
+<!--        </table>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Add Collection Modal &ndash;&gt;-->
+<!--  <div class="modal fade" id="addCollectionModal" tabindex="-1" aria-labelledby="addCollectionLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog">-->
+<!--      <div class="modal-content">-->
+<!--        <div class="modal-header">-->
+<!--          <h5 class="modal-title" id="addCollectionLabel">Add New Collection</h5>-->
+<!--          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--        </div>-->
+<!--        <div class="modal-body">-->
+<!--          <form>-->
+<!--            <div class="mb-3">-->
+<!--              <label>Collector Name</label>-->
+<!--              <input type="text" class="form-control" placeholder="Enter name">-->
+<!--            </div>-->
+<!--            <div class="mb-3">-->
+<!--              <label>KG Collected</label>-->
+<!--              <input type="number" class="form-control" placeholder="e.g. 12">-->
+<!--            </div>-->
+<!--            <div class="mb-3">-->
+<!--              <label>Revenue</label>-->
+<!--              <input type="number" class="form-control" placeholder="e.g. 240">-->
+<!--            </div>-->
+<!--            <div class="mb-3">-->
+<!--              <label>Upload Photo</label>-->
+<!--              <input type="file" class="form-control">-->
+<!--            </div>-->
+<!--            <button type="submit" class="btn btn-success">Save Collection</button>-->
+<!--          </form>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Bootstrap JS &ndash;&gt;-->
+<!--  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+
+<!--</body>-->
+<!--</html>-->

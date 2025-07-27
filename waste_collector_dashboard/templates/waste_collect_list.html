@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Waste Collection Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        img {
+            width: 100px;
+            height: auto;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            text-decoration: none;
+            margin: 2px;
+        }
+
+        .btn:hover {
+            background-color: #1c5980;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <h2>Welcome, {{ request.user.username }}</h2>
+        <a class="btn" href="{% url 'waste_collector:waste_collect_create' %}">+ Add New Collection</a>
+    </div>
+
+    {% if collections %}
+    <table>
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Municipality</th>
+                <th>Ward</th>
+                <th>Location</th>
+                <th>Building No</th>
+                <th>Street Name</th>
+                <th>KG</th>
+                <th>Total (₹)</th>
+                <th>Photo</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in collections %}
+            <tr>
+                <td>{{ item.customer.username }}</td>
+                <td>{{ item.municipality }}</td>
+                <td>{{ item.ward }}</td>
+                <td>{{ item.location }}</td>
+                <td>{{ item.building_no }}</td>
+                <td>{{ item.street_name }}</td>
+                <td>{{ item.kg }}</td>
+                <td>{{ item.total_amount }}</td>
+                <td>
+                    {% if item.photo %}
+                        <img src="{{ item.photo.url }}" alt="Photo">
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td>{{ item.created_at|date:"Y-m-d H:i" }}</td>
+                <td>
+                    <a class="btn" href="{% url 'waste_collector:waste_collect_update' item.pk %}">Edit</a>
+                    <a class="btn" href="{% url 'waste_collector:waste_collect_delete' item.pk %}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p style="text-align:center; color: #e74c3c;">No records found.</p>
+    {% endif %}
+<a href="{% url 'waste_collector:waste_collector_dashboard' %}" class="btn-secondary">
+                        ◀️ Back to Dashboard
+                    </a>
+</body>
+</html>

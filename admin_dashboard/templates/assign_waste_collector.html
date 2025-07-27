@@ -1,0 +1,500 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Title</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h2>Assign Waste Collector</h2>-->
+<!--<form method="post">-->
+<!--    {% csrf_token %}-->
+<!--    <p><strong>Customer:</strong> {{ waste_info.user.username }}</p>-->
+<!--    <p><strong>Municipality:</strong> {{ waste_info.municipality }}</p>-->
+<!--    <p><strong>Ward:</strong> {{ waste_info.ward }}</p>-->
+<!--    <p><strong>Building No:</strong> {{ waste_info.building_no }}</p>-->
+<!--    <p><strong>Street Name:</strong> {{ waste_info.street_name }}</p>-->
+<!--    <p><strong>Pincode:</strong> {{ waste_info.pincode }}</p>-->
+<!--    <p><strong>Description:</strong> {{ waste_info.description }}</p>-->
+
+
+
+<!--    <label>Select Waste Collector:</label>-->
+<!--    <select name="collector" required>-->
+<!--        {% for c in collectors %}-->
+<!--        <option value="{{ c.id }}">{{ c.username }} - {{ c.first_name }}</option>-->
+<!--        {% endfor %}-->
+<!--    </select><br><br>-->
+
+<!--    <button type="submit">Assign</button>-->
+<!--</form>-->
+<!--<a href="{% url 'admin_dashboard:view_customer_waste_info' %}">⬅ Back</a>-->
+
+
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Waste Collector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.05) 10px,
+                rgba(255, 255, 255, 0.05) 20px
+            );
+            animation: movePattern 20s linear infinite;
+        }
+
+        @keyframes movePattern {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .customer-info {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #2196F3;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .customer-info h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .customer-info h3::before {
+            content: '👤';
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #2196F3;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            word-wrap: break-word;
+        }
+
+        .assignment-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e9ecef;
+            transition: border-color 0.3s ease;
+        }
+
+        .assignment-section:hover {
+            border-color: #2196F3;
+        }
+
+        .assignment-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .assignment-section h3::before {
+            content: '🚛';
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: white;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-select:hover {
+            border-color: #2196F3;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        .back-link {
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .success-animation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            border-left: 5px solid #4CAF50;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h2 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column-reverse;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+<!--            <h2>🗂️SuchiGo</h2>-->
+<!--            <p>Schedule. Collect. Sustain</p>-->
+            <div style="font-size: 1.4rem; margin-top: 15px; opacity: 0.8;">Assign Waste Collector</div>
+        </div>
+
+        <div class="content">
+            <div class="customer-info">
+                <h3>Customer Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Customer Name</div>
+                        <div class="info-value">{{ waste_info.user.username }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Municipality</div>
+                        <div class="info-value">{{ waste_info.municipality }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ward</div>
+                        <div class="info-value">{{ waste_info.ward }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Building No</div>
+                        <div class="info-value">{{ waste_info.building_no }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Street Name</div>
+                        <div class="info-value">{{ waste_info.street_name }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Pincode</div>
+                        <div class="info-value">{{ waste_info.pincode }}</div>
+                    </div>
+                </div>
+
+                {% if waste_info.description %}
+                <div class="info-item" style="margin-top: 15px; grid-column: 1 / -1;">
+                    <div class="info-label">Description</div>
+                    <div class="info-value">{{ waste_info.description }}</div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="assignment-section">
+                <h3>Collector Assignment</h3>
+                <form method="post" id="assignmentForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label" for="collector">Select Waste Collector:</label>
+                        <select name="collector" id="collector" class="form-select" required>
+                            <option value="">-- Choose a collector --</option>
+                            {% for c in collectors %}
+                            <option value="{{ c.id }}">{{ c.username }} - {{ c.first_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="button-group">
+                        <a href="{% url 'admin_dashboard:view_customer_waste_info' %}" class="btn btn-secondary back-link">
+                            ← Back to Dashboard
+                        </a>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            Assign Collector
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="success-animation" id="successMessage">
+        <h3 style="color: #4CAF50; text-align: center;">♻️ Assignment Successful!</h3>
+        <p style="text-align: center; margin-top: 10px; color: #2196F3;">Collector has been assigned successfully.</p>
+    </div>
+
+    <script>
+        document.getElementById('assignmentForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            const collector = document.getElementById('collector').value;
+
+            if (!collector) {
+                e.preventDefault();
+                alert('Please select a waste collector before submitting.');
+                return;
+            }
+
+            // Add loading state
+            submitBtn.innerHTML = 'Assigning... <span class="loading"></span>';
+            submitBtn.disabled = true;
+
+            // In a real scenario, you might want to handle the response
+            // For now, we'll just show the loading state
+        });
+
+        // Add smooth scrolling for better UX
+        document.querySelector('.back-link').addEventListener('click', function(e) {
+            // Add a subtle animation when going back
+            document.body.style.transform = 'translateX(-10px)';
+            document.body.style.opacity = '0.8';
+            setTimeout(() => {
+                window.location.href = this.href;
+            }, 200);
+        });
+
+        // Add focus animations
+        document.getElementById('collector').addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+        });
+
+        document.getElementById('collector').addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    </script>
+</body>
+</html>
