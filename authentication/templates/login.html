@@ -1,30 +1,13 @@
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--<head><title>Login</title></head>-->
-<!--<body>-->
-<!--<h2>Login</h2>-->
-<!--<form method="POST">-->
-<!--    {% csrf_token %}-->
-<!--    {{ form.as_p }}-->
-<!--    <button type="submit">Login</button>-->
-<!--</form>-->
-<!--<a href="{% url 'authentication:register' %}">register</a>-->
-<!--</body>-->
-<!--</html>-->
-
-
-
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobile responsive -->
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -36,7 +19,7 @@
             padding: 20px;
         }
 
-        .login-container {
+          .login-container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -72,7 +55,9 @@
             font-weight: bold;
         }
 
-        h2 {
+
+
+           h2 {
             color: #2e7d32;
             font-size: 2rem;
             font-weight: 600;
@@ -82,7 +67,6 @@
             background-clip: text;
             margin-bottom: 10px;
         }
-
         .welcome-text {
             color: #666;
             font-size: 0.95rem;
@@ -94,85 +78,6 @@
             flex-direction: column;
             gap: 20px;
             text-align: left;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        label {
-            color: #2e7d32;
-            font-weight: 500;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        input[type="text"],
-        input[type="password"],
-        input[type="email"] {
-            padding: 15px;
-            border: 2px solid #e8f5e8;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus,
-        input[type="email"]:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
-            background: rgba(255, 255, 255, 1);
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 10px 0;
-        }
-
-        input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #4CAF50;
-        }
-
-        .checkbox-label {
-            color: #666;
-            font-size: 0.9rem;
-            font-weight: normal;
-            text-transform: none;
-            letter-spacing: normal;
-        }
-
-        button[type="submit"] {
-            background: linear-gradient(135deg, #4CAF50, #2196F3);
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 10px;
-        }
-
-        button[type="submit"]:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
-        }
-
-        button[type="submit"]:active {
-            transform: translateY(0);
         }
 
         .divider {
@@ -198,25 +103,6 @@
         .divider::after {
             margin-left: 15px;
         }
-
-        .register-link {
-            display: inline-block;
-            background: rgba(76, 175, 80, 0.1);
-            color: #2e7d32;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: 2px solid rgba(76, 175, 80, 0.2);
-        }
-
-        .register-link:hover {
-            background: rgba(76, 175, 80, 0.15);
-            border-color: rgba(76, 175, 80, 0.3);
-            transform: translateY(-1px);
-        }
-
         .forgot-password {
             color: #2196F3;
             text-decoration: none;
@@ -231,16 +117,67 @@
             text-decoration: underline;
         }
 
-        .help-text {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 5px;
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            padding: 15px;
+            border: 2px solid #e8f5e8;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            transition: 0.3s ease;
+            width: 100%;
         }
 
-        .error {
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #1976D2;
+            background: rgba(33, 150, 243, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s ease;
+            border: 2px solid rgba(33, 150, 243, 0.2);
+        }
+
+        a:hover {
+            background: rgba(33, 150, 243, 0.15);
+            border-color: rgba(33, 150, 243, 0.3);
+        }
+
+        .errorlist {
             color: #f44336;
             font-size: 0.85rem;
-            margin-top: 5px;
+            margin: -10px 0 10px 0;
+            list-style: none;
         }
 
         @media (max-width: 480px) {
@@ -252,19 +189,16 @@
                 font-size: 1.6rem;
             }
 
-            .logo-icon {
-                width: 50px;
-                height: 50px;
-            }
-
-            .logo-icon::before {
-                font-size: 24px;
+            a {
+                font-size: 0.9rem;
+                width: 100%;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
+     <div class="login-container">
         <div class="logo-section">
 <!--            <div class="logo-icon"></div>-->
             <h2>Welcome Back</h2>
@@ -273,32 +207,13 @@
 
         <form method="POST">
             {% csrf_token %}
-
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-
-            <div class="checkbox-group">
-                <input type="checkbox" id="remember_me" name="remember_me">
-                <label for="remember_me" class="checkbox-label">Remember me</label>
-            </div>
-
+            {{ form.as_p }}
             <button type="submit">Login</button>
 
-<!--            <a href="#" class="forgot-password">Forgot your password?</a>-->
+            <a href="#" class="forgot-password">Forgot your password?</a>
         </form>
-
-        <div class="divider">or</div>
-
-        <a href="{% url 'authentication:register' %}" class="register-link">
-            Create New Account
-        </a>
+<div class="divider">or</div>
+        <a href="{% url 'authentication:register' %}">Create New Account</a>
     </div>
 </body>
 </html>

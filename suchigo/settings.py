@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'authentication',
     'customer_dashboard',
-    'admin_dashboard',
+    'super_admin_dashboard',
     'waste_collector_dashboard',
+    'admin_dashboard',
 ]
 
 MIDDLEWARE = [

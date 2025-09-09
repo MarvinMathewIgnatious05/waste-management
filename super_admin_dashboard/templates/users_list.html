@@ -1,0 +1,2048 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>User Management</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h2>All Users</h2>-->
+<!--    <a href="{% url 'super_admin_dashboard:user_create' %}">Create User</a>-->
+<!--    <table border="1">-->
+<!--        <tr>-->
+<!--            <th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Actions</th><th>Actions2</th>-->
+<!--        </tr>-->
+<!--        {% for user in users %}-->
+<!--        <tr>-->
+<!--            <td>{{ user.id }}</td>-->
+<!--            <td>{{ user.username }}</td>-->
+<!--            <td>{{ user.email }}</td>-->
+<!--            <td>{{ user.get_role_display }}</td>-->
+<!--            <td>-->
+<!--                <a href="{% url 'super_admin_dashboard:user_update' user.id %}">Edit</a> |-->
+<!--                <a href="{% url 'super_admin_dashboard:user_delete' user.id %}">Delete</a>-->
+<!--            </td>-->
+<!--             <td>-->
+<!--      <a href="{% url 'super_admin_dashboard:map_role' user.id %}">Map Role</a>-->
+<!--    </td>-->
+<!--        </tr>-->
+<!--        {% endfor %}-->
+<!--    </table>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>User Management - SuchiGo Admin</title>-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">-->
+<!--    <style>-->
+<!--        * {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+
+<!--        body {-->
+<!--            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;-->
+<!--            background: #ffffff;-->
+<!--            min-height: 100vh;-->
+<!--            color: #333;-->
+<!--            padding: 2rem;-->
+<!--        }-->
+
+<!--        .page-container {-->
+<!--            max-width: 1200px;-->
+<!--            margin: 0 auto;-->
+<!--        }-->
+
+<!--        .page-header {-->
+<!--            background: rgba(255, 255, 255, 0.95);-->
+<!--            backdrop-filter: blur(20px);-->
+<!--            border-radius: 20px;-->
+<!--            padding: 2rem;-->
+<!--            margin-bottom: 2rem;-->
+<!--            box-shadow: 0 8px 32px rgba(0,0,0,0.1);-->
+<!--            border:1px solid #e9ecef;-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: center;-->
+<!--            animation: slideDown 0.8s ease;-->
+<!--        }-->
+
+<!--        @keyframes slideDown {-->
+<!--            from { transform: translateY(-30px); opacity: 0; }-->
+<!--            to { transform: translateY(0); opacity: 1; }-->
+<!--        }-->
+
+<!--        .page-title {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 1rem;-->
+<!--        }-->
+
+<!--        .page-title h2 {-->
+<!--            font-size: 2.2rem;-->
+<!--            background:  linear-gradient(135deg, #4CAF50, #2196F3);-->
+<!--            -webkit-background-clip: text;-->
+<!--            -webkit-text-fill-color: transparent;-->
+<!--            background-clip: text;-->
+<!--            margin: 0;-->
+<!--            font-weight: 700;-->
+<!--        }-->
+
+<!--        .page-icon {-->
+<!--            width: 60px;-->
+<!--            height: 60px;-->
+<!--            background: linear-gradient(135deg, #4CAF50, #2196F3);-->
+<!--            border-radius: 20px;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            color: white;-->
+<!--            font-size: 1.8rem;-->
+<!--            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.3);-->
+<!--        }-->
+
+<!--        .back-btn {-->
+<!--            background: linear-gradient(135deg, #4CAF50, #2196F3);-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            padding: 1rem 2rem;-->
+<!--            border-radius: 15px;-->
+<!--            cursor: pointer;-->
+<!--            text-decoration: none;-->
+<!--            font-weight: 600;-->
+<!--            transition: all 0.3s ease;-->
+<!--            display: inline-flex;-->
+<!--            align-items: center;-->
+<!--            gap: 0.5rem;-->
+<!--            position: relative;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        .back-btn::before {-->
+<!--            content: '';-->
+<!--            position: absolute;-->
+<!--            top: 0;-->
+<!--            left: -100%;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);-->
+<!--            transition: left 0.5s;-->
+<!--        }-->
+
+<!--        .back-btn:hover::before {-->
+<!--            left: 100%;-->
+<!--        }-->
+
+<!--        .back-btn:hover {-->
+<!--            transform: translateY(-3px);-->
+<!--            box-shadow: 0 10px 30px rgba(0,0,0,0.2);-->
+<!--            color: white;-->
+<!--            text-decoration: none;-->
+<!--        }-->
+
+<!--        .table-container {-->
+<!--            background: rgba(255, 255, 255, 0.95);-->
+<!--            backdrop-filter: blur(20px);-->
+<!--            border-radius: 20px;-->
+<!--            padding: 2rem;-->
+<!--            box-shadow: 0 8px 32px rgba(0,0,0,0.1);-->
+<!--            border: 1px solid rgba(255,255,255,0.2);-->
+<!--            overflow-x: auto;-->
+<!--            animation: fadeInUp 0.8s ease 0.3s both;-->
+<!--        }-->
+
+<!--        @keyframes fadeInUp {-->
+<!--            from { transform: translateY(30px); opacity: 0; }-->
+<!--            to { transform: translateY(0); opacity: 1; }-->
+<!--        }-->
+
+<!--        .table-header {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: center;-->
+<!--            margin-bottom: 1.5rem;-->
+<!--            padding-bottom: 1rem;-->
+<!--            border-bottom: 2px solid rgba(102, 126, 234, 0.2);-->
+<!--        }-->
+
+<!--        .table-info {-->
+<!--            color: #666;-->
+<!--            font-size: 1rem;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 0.5rem;-->
+<!--        }-->
+
+<!--        .search-container {-->
+<!--            position: relative;-->
+<!--            margin-bottom: 1.5rem;-->
+<!--        }-->
+
+<!--        .search-input {-->
+<!--            width: 100%;-->
+<!--            padding: 1rem 1rem 1rem 3rem;-->
+<!--            border: 2px solid #e9ecef;-->
+<!--            border-radius: 15px;-->
+<!--            font-size: 1rem;-->
+<!--            transition: all 0.3s ease;-->
+<!--            background: white;-->
+<!--        }-->
+
+<!--        .search-input:focus {-->
+<!--            outline: none;-->
+<!--            border-color: #4CAF50;-->
+<!--            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);-->
+<!--        }-->
+
+<!--        .search-icon {-->
+<!--            position: absolute;-->
+<!--            left: 1rem;-->
+<!--            top: 50%;-->
+<!--            transform: translateY(-50%);-->
+<!--            color: #666;-->
+<!--        }-->
+
+<!--        .action-buttons {-->
+<!--            display: flex;-->
+<!--            gap: 0.8rem;-->
+<!--        }-->
+
+<!--        .btn {-->
+<!--            background: linear-gradient(135deg, #4CAF50, #2196F3);-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            padding: 0.8rem 1.5rem;-->
+<!--            border-radius: 12px;-->
+<!--            cursor: pointer;-->
+<!--            text-decoration: none;-->
+<!--            font-weight: 600;-->
+<!--            transition: all 0.3s ease;-->
+<!--            display: inline-flex;-->
+<!--            align-items: center;-->
+<!--            gap: 0.5rem;-->
+<!--            font-size: 0.9rem;-->
+<!--            position: relative;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        .btn::before {-->
+<!--            content: '';-->
+<!--            position: absolute;-->
+<!--            top: 0;-->
+<!--            left: -100%;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);-->
+<!--            transition: left 0.5s;-->
+<!--        }-->
+
+<!--        .btn:hover::before {-->
+<!--            left: 100%;-->
+<!--        }-->
+
+<!--        .btn:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 6px 20px rgba(0,0,0,0.2);-->
+<!--            color: white;-->
+<!--            text-decoration: none;-->
+<!--        }-->
+
+<!--        .btn-secondary {-->
+<!--            background: linear-gradient(135deg, #6c757d, #495057);-->
+<!--        }-->
+
+<!--        .btn-warning {-->
+<!--            background: linear-gradient(135deg, #ffc107, #e0a800);-->
+<!--            padding: 0.5rem 1rem;-->
+<!--            font-size: 0.85rem;-->
+<!--            color: #212529;-->
+<!--        }-->
+
+<!--        .btn-warning:hover {-->
+<!--            color: #212529;-->
+<!--            background: linear-gradient(135deg, #e0a800, #d39e00);-->
+<!--        }-->
+
+<!--        .btn-danger {-->
+<!--            background: linear-gradient(135deg, #dc3545, #c82333);-->
+<!--            padding: 0.5rem 1rem;-->
+<!--            font-size: 0.85rem;-->
+<!--        }-->
+
+<!--        .btn-danger:hover {-->
+<!--            background: linear-gradient(135deg, #c82333, #bd2130);-->
+<!--        }-->
+
+<!--        .btn-info {-->
+<!--            background: linear-gradient(135deg, #17a2b8, #138496);-->
+<!--            padding: 0.5rem 1rem;-->
+<!--            font-size: 0.85rem;-->
+<!--        }-->
+
+<!--        .btn-info:hover {-->
+<!--            background: linear-gradient(135deg, #138496, #117a8b);-->
+<!--        }-->
+
+<!--        /* Desktop Table */-->
+<!--        .desktop-table {-->
+<!--            display: block;-->
+<!--        }-->
+
+<!--        table {-->
+<!--            width: 100%;-->
+<!--            border-collapse: collapse;-->
+<!--            background: white;-->
+<!--            border-radius: 15px;-->
+<!--            overflow: hidden;-->
+<!--            box-shadow: 0 4px 20px rgba(0,0,0,0.08);-->
+<!--        }-->
+
+<!--        th {-->
+<!--            background: linear-gradient(135deg, #4CAF50, #2196F3);-->
+<!--            color: white;-->
+<!--            padding: 1.2rem;-->
+<!--            text-align: left;-->
+<!--            font-weight: 700;-->
+<!--            font-size: 0.9rem;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 1px;-->
+<!--            position: relative;-->
+<!--        }-->
+
+<!--        td {-->
+<!--            padding: 1.2rem;-->
+<!--            border-bottom: 1px solid #f1f3f4;-->
+<!--            color: #333;-->
+<!--            transition: all 0.3s ease;-->
+<!--        }-->
+
+<!--        tr:hover td {-->
+<!--            background: linear-gradient(135deg, rgba(76, 175, 80, 0.05), rgba(33, 150, 243, 0.05));-->
+<!--            transform: scale(1.01);-->
+<!--        }-->
+
+<!--        tr:last-child td {-->
+<!--            border-bottom: none;-->
+<!--        }-->
+
+<!--        .user-info {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 1rem;-->
+<!--        }-->
+
+<!--        .user-avatar {-->
+<!--            width: 45px;-->
+<!--            height: 45px;-->
+<!--            background: linear-gradient(135deg, #4CAF50, #2196F3);-->
+<!--            border-radius: 50%;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            color: white;-->
+<!--            font-weight: bold;-->
+<!--            font-size: 1rem;-->
+<!--            box-shadow: 0 4px 15px rgba(0,0,0,0.1);-->
+<!--        }-->
+
+<!--        .role-badge {-->
+<!--            padding: 0.5rem 1rem;-->
+<!--            border-radius: 20px;-->
+<!--            font-size: 0.8rem;-->
+<!--            font-weight: 600;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 0.5px;-->
+<!--            box-shadow: 0 2px 10px rgba(0,0,0,0.1);-->
+<!--        }-->
+
+<!--        .role-admin {-->
+<!--            background: linear-gradient(135deg, #dc3545, #c82333);-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .role-manager {-->
+<!--            background: linear-gradient(135deg, #ffc107, #e0a800);-->
+<!--            color: #212529;-->
+<!--        }-->
+
+<!--        .role-user {-->
+<!--            background: linear-gradient(135deg, #28a745, #218838);-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .role-customer {-->
+<!--            background: linear-gradient(135deg, #17a2b8, #138496);-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .action-group {-->
+<!--            display: flex;-->
+<!--            gap: 0.5rem;-->
+<!--            flex-wrap: wrap;-->
+<!--        }-->
+
+<!--        /* Mobile Cards */-->
+<!--        .mobile-cards {-->
+<!--            display: none;-->
+<!--        }-->
+
+<!--        .user-card {-->
+<!--            background: white;-->
+<!--            border-radius: 20px;-->
+<!--            padding: 2rem;-->
+<!--            margin-bottom: 1.5rem;-->
+<!--            box-shadow: 0 8px 32px rgba(0,0,0,0.1);-->
+<!--            border: 1px solid rgba(255,255,255,0.2);-->
+<!--            transition: all 0.3s ease;-->
+<!--        }-->
+
+<!--        .user-card:hover {-->
+<!--            transform: translateY(-5px);-->
+<!--            box-shadow: 0 15px 50px rgba(0,0,0,0.15);-->
+<!--        }-->
+
+<!--        .card-header {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: flex-start;-->
+<!--            margin-bottom: 1.5rem;-->
+<!--        }-->
+
+<!--        .card-user-info {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 1rem;-->
+<!--        }-->
+
+<!--        .card-avatar {-->
+<!--            width: 60px;-->
+<!--            height: 60px;-->
+<!--            background: linear-gradient(135deg, #4CAF50, #2196F3);-->
+<!--            border-radius: 50%;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            color: white;-->
+<!--            font-weight: bold;-->
+<!--            font-size: 1.2rem;-->
+<!--            box-shadow: 0 4px 20px rgba(0,0,0,0.1);-->
+<!--        }-->
+
+<!--        .card-details {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            gap: 1rem;-->
+<!--        }-->
+
+<!--        .card-row {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 1rem;-->
+<!--        }-->
+
+<!--        .card-label {-->
+<!--            font-weight: 700;-->
+<!--            color: #666;-->
+<!--            min-width: 80px;-->
+<!--        }-->
+
+<!--        .card-value {-->
+<!--            color: #333;-->
+<!--            font-weight: 500;-->
+<!--        }-->
+
+<!--        .card-actions {-->
+<!--            display: flex;-->
+<!--            flex-wrap: wrap;-->
+<!--            gap: 0.8rem;-->
+<!--            justify-content: flex-end;-->
+<!--            margin-top: 1.5rem;-->
+<!--            padding-top: 1.5rem;-->
+<!--            border-top: 2px solid #f1f3f4;-->
+<!--        }-->
+
+<!--        .stats-summary {-->
+<!--            display: grid;-->
+<!--            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));-->
+<!--            gap: 1.5rem;-->
+<!--            margin-bottom: 2rem;-->
+<!--        }-->
+
+<!--        .stat-card {-->
+<!--            background: rgba(255, 255, 255, 0.95);-->
+<!--            backdrop-filter: blur(20px);-->
+<!--            border-radius: 20px;-->
+<!--            padding: 2rem;-->
+<!--            box-shadow: 0 8px 32px rgba(0,0,0,0.1);-->
+<!--            border: 1px solid rgba(255,255,255,0.2);-->
+<!--            text-align: center;-->
+<!--            transition: all 0.3s ease;-->
+<!--            animation: fadeInUp 0.8s ease both;-->
+<!--        }-->
+
+<!--        .stat-card:hover {-->
+<!--            transform: translateY(-5px) scale(1.02);-->
+<!--            box-shadow: 0 15px 50px rgba(0,0,0,0.2);-->
+<!--        }-->
+
+<!--        .stat-value {-->
+<!--            font-size: 2.5rem;-->
+<!--            font-weight: 900;-->
+<!--            background: linear-gradient(135deg, #4CAF50, #2196F3, #9C27B0);-->
+<!--            -webkit-background-clip: text;-->
+<!--            -webkit-text-fill-color: transparent;-->
+<!--            background-clip: text;-->
+<!--            margin-bottom: 0.5rem;-->
+<!--        }-->
+
+<!--        .stat-label {-->
+<!--            color: #666;-->
+<!--            font-size: 1rem;-->
+<!--            font-weight: 600;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 1px;-->
+<!--        }-->
+
+<!--        .no-data {-->
+<!--            text-align: center;-->
+<!--            padding: 4rem;-->
+<!--            color: #666;-->
+<!--        }-->
+
+<!--        .no-data i {-->
+<!--            font-size: 4rem;-->
+<!--            color: #ddd;-->
+<!--            margin-bottom: 1.5rem;-->
+<!--        }-->
+
+<!--        /* Delete Confirmation Modal */-->
+<!--        .modal {-->
+<!--            display: none;-->
+<!--            position: fixed;-->
+<!--            z-index: 1000;-->
+<!--            left: 0;-->
+<!--            top: 0;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            background-color: rgba(0,0,0,0.6);-->
+<!--            backdrop-filter: blur(5px);-->
+<!--            animation: fadeIn 0.3s ease;-->
+<!--        }-->
+
+<!--        .modal-content {-->
+<!--            background: white;-->
+<!--            margin: 10% auto;-->
+<!--            padding: 2.5rem;-->
+<!--            border-radius: 20px;-->
+<!--            width: 90%;-->
+<!--            max-width: 450px;-->
+<!--            box-shadow: 0 20px 60px rgba(0,0,0,0.3);-->
+<!--            animation: modalSlideIn 0.3s ease;-->
+<!--        }-->
+
+<!--        @keyframes modalSlideIn {-->
+<!--            from { transform: translateY(-50px) scale(0.9); opacity: 0; }-->
+<!--            to { transform: translateY(0) scale(1); opacity: 1; }-->
+<!--        }-->
+
+<!--        .modal-header {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 1rem;-->
+<!--            margin-bottom: 1.5rem;-->
+<!--            padding-bottom: 1rem;-->
+<!--            border-bottom: 2px solid #f1f3f4;-->
+<!--        }-->
+
+<!--        .modal-icon {-->
+<!--            width: 50px;-->
+<!--            height: 50px;-->
+<!--            background: linear-gradient(135deg, #dc3545, #c82333);-->
+<!--            border-radius: 50%;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            color: white;-->
+<!--            font-size: 1.2rem;-->
+<!--        }-->
+
+<!--        .modal-title {-->
+<!--            font-size: 1.3rem;-->
+<!--            font-weight: 700;-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        .modal-body {-->
+<!--            margin-bottom: 2rem;-->
+<!--            color: #666;-->
+<!--            line-height: 1.6;-->
+<!--            font-size: 1rem;-->
+<!--        }-->
+
+<!--        .modal-actions {-->
+<!--            display: flex;-->
+<!--            gap: 1rem;-->
+<!--            justify-content: flex-end;-->
+<!--        }-->
+
+<!--        .btn-cancel {-->
+<!--            background: linear-gradient(135deg, #6c757d, #495057);-->
+<!--        }-->
+
+<!--        .filter-tabs {-->
+<!--            display: flex;-->
+<!--            gap: 0.5rem;-->
+<!--            margin-bottom: 1.5rem;-->
+<!--            flex-wrap: wrap;-->
+<!--        }-->
+
+<!--        .filter-tab {-->
+<!--            padding: 0.8rem 1.5rem;-->
+<!--            border: 2px solid #e9ecef;-->
+<!--            background: white;-->
+<!--            border-radius: 12px;-->
+<!--            cursor: pointer;-->
+<!--            transition: all 0.3s ease;-->
+<!--            font-weight: 600;-->
+<!--            color: #666;-->
+<!--        }-->
+
+<!--        .filter-tab.active {-->
+<!--            background: linear-gradient(135deg, #4CAF50, #2196F3);-->
+<!--            color: white;-->
+<!--            border-color: transparent;-->
+<!--        }-->
+
+<!--        .filter-tab:hover {-->
+<!--            border-color: #4CAF50;-->
+<!--        }-->
+
+<!--        /* Responsive Design */-->
+<!--        @media (max-width: 768px) {-->
+<!--            body {-->
+<!--                padding: 1rem;-->
+<!--            }-->
+
+<!--            .page-header {-->
+<!--                flex-direction: column;-->
+<!--                gap: 1rem;-->
+<!--                text-align: center;-->
+<!--                padding: 1.5rem;-->
+<!--            }-->
+
+<!--            .page-title h2 {-->
+<!--                font-size: 1.8rem;-->
+<!--            }-->
+
+<!--            .page-icon {-->
+<!--                width: 50px;-->
+<!--                height: 50px;-->
+<!--            }-->
+
+<!--            .table-container {-->
+<!--                padding: 1rem;-->
+<!--            }-->
+
+<!--            .table-header {-->
+<!--                flex-direction: column;-->
+<!--                gap: 1rem;-->
+<!--                align-items: stretch;-->
+<!--            }-->
+
+<!--            .action-buttons {-->
+<!--                justify-content: center;-->
+<!--            }-->
+
+<!--            .desktop-table {-->
+<!--                display: none;-->
+<!--            }-->
+
+<!--            .mobile-cards {-->
+<!--                display: block;-->
+<!--            }-->
+
+<!--            .stats-summary {-->
+<!--                grid-template-columns: 1fr;-->
+<!--            }-->
+
+<!--            .stat-card {-->
+<!--                padding: 1.5rem;-->
+<!--            }-->
+
+<!--            .stat-value {-->
+<!--                font-size: 2rem;-->
+<!--            }-->
+
+<!--            .modal-content {-->
+<!--                margin: 20% auto;-->
+<!--                width: 95%;-->
+<!--                padding: 2rem;-->
+<!--            }-->
+
+<!--            .card-actions {-->
+<!--                justify-content: center;-->
+<!--            }-->
+
+<!--            .action-group {-->
+<!--                justify-content: center;-->
+<!--            }-->
+
+<!--            .filter-tabs {-->
+<!--                justify-content: center;-->
+<!--            }-->
+<!--        }-->
+
+<!--        @media (max-width: 480px) {-->
+<!--            body {-->
+<!--                padding: 0.5rem;-->
+<!--            }-->
+
+<!--            .page-header {-->
+<!--                padding: 1rem;-->
+<!--            }-->
+
+<!--            .page-title {-->
+<!--                flex-direction: column;-->
+<!--                gap: 0.8rem;-->
+<!--            }-->
+
+<!--            .page-icon {-->
+<!--                width: 45px;-->
+<!--                height: 45px;-->
+<!--            }-->
+
+<!--            .user-card {-->
+<!--                padding: 1.5rem;-->
+<!--            }-->
+
+<!--            .card-user-info {-->
+<!--                flex-direction: column;-->
+<!--                text-align: center;-->
+<!--                gap: 1rem;-->
+<!--            }-->
+
+<!--            .card-row {-->
+<!--                flex-direction: column;-->
+<!--                align-items: flex-start;-->
+<!--                gap: 0.5rem;-->
+<!--            }-->
+
+<!--            .card-label {-->
+<!--                min-width: auto;-->
+<!--            }-->
+
+<!--            .modal-actions {-->
+<!--                flex-direction: column;-->
+<!--            }-->
+
+<!--            .card-actions {-->
+<!--                flex-direction: column;-->
+<!--            }-->
+
+<!--            .action-group {-->
+<!--                flex-direction: column;-->
+<!--                width: 100%;-->
+<!--            }-->
+
+<!--            .btn {-->
+<!--                justify-content: center;-->
+<!--                width: 100%;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="page-container">-->
+<!--        &lt;!&ndash; Page Header &ndash;&gt;-->
+<!--        <div class="page-header">-->
+<!--            <div class="page-title">-->
+<!--                <div class="page-icon">-->
+<!--                    <i class="fas fa-users-cog"></i>-->
+<!--                </div>-->
+<!--                <h2>User Management</h2>-->
+<!--            </div>-->
+<!--            <a href="#" class="back-btn" onclick="goBack()">-->
+<!--                <i class="fas fa-arrow-left"></i>-->
+<!--                Back to Dashboard-->
+<!--            </a>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Stats Summary &ndash;&gt;-->
+<!--        <div class="stats-summary">-->
+<!--            <div class="stat-card">-->
+<!--                <div class="stat-value" id="total-users">12</div>-->
+<!--                <div class="stat-label">Total Users</div>-->
+<!--            </div>-->
+<!--            <div class="stat-card">-->
+<!--                <div class="stat-value" id="admin-users">3</div>-->
+<!--                <div class="stat-label">Admin Users</div>-->
+<!--            </div>-->
+<!--            <div class="stat-card">-->
+<!--                <div class="stat-value" id="active-users">9</div>-->
+<!--                <div class="stat-label">Active Users</div>-->
+<!--            </div>-->
+<!--            <div class="stat-card">-->
+<!--                <div class="stat-value" id="new-users">4</div>-->
+<!--                <div class="stat-label">New This Month</div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Table Container &ndash;&gt;-->
+<!--        <div class="table-container">-->
+<!--            <div class="table-header">-->
+<!--                <div class="table-info">-->
+<!--                    <i class="fas fa-info-circle"></i>-->
+<!--                    Showing all system users and their roles-->
+<!--                </div>-->
+<!--                <div class="action-buttons">-->
+<!--                    <a href="#" class="btn" onclick="openCreateUserModal()">-->
+<!--                        <i class="fas fa-plus"></i>-->
+<!--                        Create User-->
+<!--                    </a>-->
+<!--                    <a href="#" class="btn btn-secondary" onclick="exportUsers()">-->
+<!--                        <i class="fas fa-download"></i>-->
+<!--                        Export-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Search and Filters &ndash;&gt;-->
+<!--            <div class="search-container">-->
+<!--                <i class="fas fa-search search-icon"></i>-->
+<!--                <input type="text" class="search-input" placeholder="Search users by name, email, or role..." id="searchInput">-->
+<!--            </div>-->
+
+<!--            <div class="filter-tabs">-->
+<!--                <div class="filter-tab active" onclick="filterUsers('all')">All Users</div>-->
+<!--                <div class="filter-tab" onclick="filterUsers('admin')">Admins</div>-->
+<!--                <div class="filter-tab" onclick="filterUsers('manager')">Managers</div>-->
+<!--                <div class="filter-tab" onclick="filterUsers('customer')">Customers</div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Desktop Table View &ndash;&gt;-->
+<!--            <div class="desktop-table">-->
+<!--                <table id="usersTable">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th><i class="fas fa-hashtag"></i> ID</th>-->
+<!--                            <th><i class="fas fa-user"></i> Username</th>-->
+<!--                            <th><i class="fas fa-envelope"></i> Email</th>-->
+<!--                            <th><i class="fas fa-shield-alt"></i> Role</th>-->
+<!--                            <th><i class="fas fa-clock"></i> Last Login</th>-->
+<!--                            <th><i class="fas fa-cog"></i> Actions</th>-->
+<!--                            <th><i class="fas fa-user-tag"></i> Role Mapping</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody id="usersTableBody">-->
+<!--                        &lt;!&ndash; Sample Users &ndash;&gt;-->
+<!--                        {% for user in users %}-->
+<!--        <tr>-->
+<!--            <td>{{ user.id }}</td>-->
+<!--            <td>{{ user.username }}</td>-->
+<!--            <td>{{ user.email }}</td>-->
+<!--            <td>{{ user.get_role_display }}</td>-->
+<!--            <td>-->
+<!--                <a href="{% url 'super_admin_dashboard:user_update' user.id %}">Edit</a> |-->
+<!--                <a href="{% url 'super_admin_dashboard:user_delete' user.id %}">Delete</a>-->
+<!--            </td>-->
+<!--             <td>-->
+<!--      <a href="{% url 'super_admin_dashboard:map_role' user.id %}">Map Role</a>-->
+<!--    </td>-->
+<!--        </tr>-->
+<!--        {% endfor %}-->
+<!--                        </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Mobile Card View &ndash;&gt;-->
+<!--            <div class="mobile-cards" id="mobileCards">-->
+<!--                <div class="user-card" data-role="admin">-->
+<!--                    <div class="card-header">-->
+<!--                        <div class="card-user-info">-->
+<!--                            <div class="card-avatar">J</div>-->
+<!--                            <div>-->
+<!--                                <strong>john_admin</strong>-->
+<!--                                <br>-->
+<!--                                <small style="color: #666;">@john_admin</small>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <span class="role-badge role-admin">Super Admin</span>-->
+<!--                    </div>-->
+
+<!--                    <div class="card-details">-->
+<!--                        <div class="card-row">-->
+<!--                            <span class="card-label">-->
+<!--                                <i class="fas fa-hashtag"></i> ID:-->
+<!--                            </span>-->
+<!--                            <span class="card-value">1</span>-->
+<!--                        </div>-->
+<!--                        <div class="card-row">-->
+<!--                            <span class="card-label">-->
+<!--                                <i class="fas fa-envelope"></i> Email:-->
+<!--                            </span>-->
+<!--                            <span class="card-value">john@suchigo.com</span>-->
+<!--                        </div>-->
+<!--                        <div class="card-row">-->
+<!--                            <span class="card-label">-->
+<!--                                <i class="fas fa-clock"></i> Last Login:-->
+<!--                            </span>-->
+<!--                            <span class="card-value">2 hours ago</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="card-actions">-->
+<!--                        <a href="#" class="btn btn-warning" onclick="editUser(1)">-->
+<!--                            <i class="fas fa-edit"></i>-->
+<!--                            Edit-->
+<!--                        </a>-->
+<!--                        <a href="#" class="btn btn-danger" onclick="confirmDelete(1, 'john_admin')">-->
+<!--                            <i class="fas fa-trash"></i>-->
+<!--                            Delete-->
+<!--                        </a>-->
+<!--                        <a href="#" class="btn btn-info" onclick="mapRole(1)">-->
+<!--                            <i class="fas fa-user-tag"></i>-->
+<!--                            Map Role-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="user-card" data-role="manager">-->
+<!--                    <div class="card-header">-->
+<!--                        <div class="card-user-info">-->
+<!--                            <div class="card-avatar">S</div>-->
+<!--                            <div>-->
+<!--                                <strong>sarah_manager</strong>-->
+<!--                                <br>-->
+<!--                                <small style="color: #666;">@sarah_manager</small>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <span class="role-badge role-manager">Manager</span>-->
+<!--                    </div>-->
+
+<!--                    <div class="card-details">-->
+<!--                        <div class="card-row">-->
+<!--                            <span class="card-label">-->
+<!--                                <i class="fas fa-hashtag"></i> ID:-->
+<!--                            </span>-->
+<!--                            <span class="card-value">2</span>-->
+<!--                        </div>-->
+<!--                        <div class="card-row">-->
+<!--                            <span class="card-label">-->
+<!--                                <i class="fas fa-envelope"></i> Email:-->
+<!--                            </span>-->
+<!--                            <span class="card-value">sarah@suchigo.com</span>-->
+<!--                        </div>-->
+<!--                        <div class="card-row">-->
+<!--                            <span class="card-label">-->
+<!--                                <i class="fas fa-clock"></i> Last Login:-->
+<!--                            </span>-->
+<!--                            <span class="card-value">5 hours ago</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="card-actions">-->
+<!--                        <a href="#" class="btn btn-warning" onclick="editUser(2)">-->
+<!--                            <i class="fas fa-edit"></i>-->
+<!--                            Edit-->
+<!--                        </a>-->
+<!--                        <a href="#" class="btn btn-danger" onclick="confirmDelete(2, 'sarah_manager')">-->
+<!--                            <i class="fas fa-trash"></i>-->
+<!--                            Delete-->
+<!--                        </a>-->
+<!--                        <a href="#" class="btn btn-info" onclick="mapRole(2)">-->
+<!--                            <i class="fas fa-user-tag"></i>-->
+<!--                            Map Role-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="user-card" data-role="customer">-->
+<!--                    <div class="card-header">-->
+<!--                        <div class="card-user-info">-->
+<!--                            <div class="card-avatar">M</div>-->
+<!--                            <div>-->
+<!--                                <strong>mike_customer</strong>-->
+<!--                                <br>-->
+<!--                                <small style="color: #666;">@mike_customer</small>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <span class="role-badge role-customer">Customer</span>-->
+<!--                    </div>-->
+
+<!--                    <div class="card-details">-->
+<!--                        <div class="card-row">-->
+<!--                            <span class="card-label">-->
+<!--                                <i class="fas fa-hashtag"></i> ID:-->
+<!--                            </span>-->
+<!--                            <span class="card-value">3</span>-->
+<!--                        </div>-->
+<!--                        <div class="card-row">-->
+<!--                            <span class="card-label">-->
+<!--                                <i class="fas fa-envelope"></i> Email:-->
+<!--                            </span>-->
+<!--                            <span class="card-value">mike@example.com</span>-->
+<!--                        </div>-->
+<!--                        <div class="card-row">-->
+<!--                            <span class="card-label">-->
+<!--                                <i class="fas fa-clock"></i> Last Login:-->
+<!--                            </span>-->
+<!--                            <span class="card-value">1 day ago</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="card-actions">-->
+<!--                        <a href="#" class="btn btn-warning" onclick="editUser(3)">-->
+<!--                            <i class="fas fa-edit"></i>-->
+<!--                            Edit-->
+<!--                        </a>-->
+<!--                        <a href="#" class="btn btn-danger" onclick="confirmDelete(3, 'mike_customer')">-->
+<!--                            <i class="fas fa-trash"></i>-->
+<!--                            Delete-->
+<!--                        </a>-->
+<!--                        <a href="#" class="btn btn-info" onclick="mapRole(3)">-->
+<!--                            <i class="fas fa-user-tag"></i>-->
+<!--                            Map Role-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Delete Confirmation Modal &ndash;&gt;-->
+<!--        <div id="deleteModal" class="modal">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <div class="modal-icon">-->
+<!--                        <i class="fas fa-exclamation-triangle"></i>-->
+<!--                    </div>-->
+<!--                    <div class="modal-title">Confirm Deletion</div>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <p>Are you sure you want to delete the user <strong id="deleteUsername"></strong>?</p>-->
+<!--                    <p>This action cannot be undone and will permanently remove all user data.</p>-->
+<!--                </div>-->
+<!--                <div class="modal-actions">-->
+<!--                    <button class="btn btn-cancel" onclick="closeDeleteModal()">-->
+<!--                        <i class="fas fa-times"></i>-->
+<!--                        Cancel-->
+<!--                    </button>-->
+<!--                    <button class="btn btn-danger" onclick="deleteUser()" id="confirmDeleteBtn">-->
+<!--                        <i class="fas fa-trash"></i>-->
+<!--                        Delete User-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Success/Error Messages &ndash;&gt;-->
+<!--        <div id="messageContainer" style="position: fixed; top: 20px; right: 20px; z-index: 2000;"></div>-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        let deleteUserId = null;-->
+
+<!--        // Search functionality-->
+<!--        document.getElementById('searchInput').addEventListener('input', function(e) {-->
+<!--            const searchTerm = e.target.value.toLowerCase();-->
+<!--            const tableRows = document.querySelectorAll('#usersTableBody tr');-->
+<!--            const mobileCards = document.querySelectorAll('.mobile-cards .user-card');-->
+
+<!--            // Filter table rows-->
+<!--            tableRows.forEach(row => {-->
+<!--                const text = row.textContent.toLowerCase();-->
+<!--                row.style.display = text.includes(searchTerm) ? '' : 'none';-->
+<!--            });-->
+
+<!--            // Filter mobile cards-->
+<!--            mobileCards.forEach(card => {-->
+<!--                const text = card.textContent.toLowerCase();-->
+<!--                card.style.display = text.includes(searchTerm) ? '' : 'none';-->
+<!--            });-->
+<!--        });-->
+
+<!--        // Role filter functionality-->
+<!--        function filterUsers(role) {-->
+<!--            // Update active tab-->
+<!--            document.querySelectorAll('.filter-tab').forEach(tab => {-->
+<!--                tab.classList.remove('active');-->
+<!--            });-->
+<!--            event.target.classList.add('active');-->
+
+<!--            const tableRows = document.querySelectorAll('#usersTableBody tr');-->
+<!--            const mobileCards = document.querySelectorAll('.mobile-cards .user-card');-->
+
+<!--            // Filter table rows-->
+<!--            tableRows.forEach(row => {-->
+<!--                if (role === 'all') {-->
+<!--                    row.style.display = '';-->
+<!--                } else {-->
+<!--                    row.style.display = row.dataset.role === role ? '' : 'none';-->
+<!--                }-->
+<!--            });-->
+
+<!--            // Filter mobile cards-->
+<!--            mobileCards.forEach(card => {-->
+<!--                if (role === 'all') {-->
+<!--                    card.style.display = '';-->
+<!--                } else {-->
+<!--                    card.style.display = card.dataset.role === role ? '' : 'none';-->
+<!--                }-->
+<!--            });-->
+
+<!--            // Update stats based on filter-->
+<!--            updateFilterStats(role);-->
+<!--        }-->
+
+<!--        function updateFilterStats(role) {-->
+<!--            const allRows = document.querySelectorAll('#usersTableBody tr');-->
+<!--            let count = 0;-->
+
+<!--            if (role === 'all') {-->
+<!--                count = allRows.length;-->
+<!--            } else {-->
+<!--                count = document.querySelectorAll(`#usersTableBody tr[data-role="${role}"]`).length;-->
+<!--            }-->
+
+<!--            // You could update a filter result count here-->
+<!--            console.log(`Showing ${count} users for role: ${role}`);-->
+<!--        }-->
+
+<!--        // Modal functions-->
+<!--        function confirmDelete(userId, username) {-->
+<!--            deleteUserId = userId;-->
+<!--            document.getElementById('deleteUsername').textContent = username;-->
+<!--            document.getElementById('deleteModal').style.display = 'block';-->
+<!--        }-->
+
+<!--        function closeDeleteModal() {-->
+<!--            document.getElementById('deleteModal').style.display = 'none';-->
+<!--            deleteUserId = null;-->
+<!--        }-->
+
+<!--        function deleteUser() {-->
+<!--            if (deleteUserId) {-->
+<!--                // Here you would typically make an AJAX call to delete the user-->
+<!--                console.log('Deleting user ID:', deleteUserId);-->
+
+<!--                // Remove the user row from table-->
+<!--                const tableRow = document.querySelector(`#usersTableBody tr:nth-child(${deleteUserId})`);-->
+<!--                const mobileCard = document.querySelector(`.mobile-cards .user-card:nth-child(${deleteUserId})`);-->
+
+<!--                if (tableRow) {-->
+<!--                    tableRow.remove();-->
+<!--                }-->
+<!--                if (mobileCard) {-->
+<!--                    mobileCard.remove();-->
+<!--                }-->
+
+<!--                // Update stats-->
+<!--                updateUserStats();-->
+
+<!--                // Show success message-->
+<!--                showMessage('User deleted successfully!', 'success');-->
+
+<!--                closeDeleteModal();-->
+<!--            }-->
+<!--        }-->
+
+<!--        // User management functions-->
+<!--        function editUser(userId) {-->
+<!--            console.log('Editing user ID:', userId);-->
+<!--            showMessage('Redirecting to edit user...', 'info');-->
+<!--            // Here you would redirect to edit page or open edit modal-->
+<!--        }-->
+
+<!--        function mapRole(userId) {-->
+<!--            console.log('Mapping role for user ID:', userId);-->
+<!--            showMessage('Opening role mapping...', 'info');-->
+<!--            // Here you would open role mapping interface-->
+<!--        }-->
+
+<!--        function openCreateUserModal() {-->
+<!--            console.log('Opening create user modal');-->
+<!--            showMessage('Redirecting to create user...', 'info');-->
+<!--            // Here you would open create user form or redirect-->
+<!--        }-->
+
+<!--        function exportUsers() {-->
+<!--            console.log('Exporting users');-->
+<!--            showMessage('Preparing export...', 'info');-->
+
+<!--            // Simple CSV export simulation-->
+<!--            setTimeout(() => {-->
+<!--                const csvContent = generateUserCSV();-->
+<!--                downloadCSV(csvContent, 'users_export.csv');-->
+<!--                showMessage('Export completed!', 'success');-->
+<!--            }, 1000);-->
+<!--        }-->
+
+<!--        function generateUserCSV() {-->
+<!--            const headers = ['ID', 'Username', 'Email', 'Role', 'Last Login'];-->
+<!--            const rows = [-->
+<!--                []-->
+<!--            ];-->
+
+<!--            return [headers, ...rows].map(row => row.join(',')).join('\n');-->
+<!--        }-->
+
+<!--        function downloadCSV(content, filename) {-->
+<!--            const blob = new Blob([content], { type: 'text/csv' });-->
+<!--            const url = window.URL.createObjectURL(blob);-->
+<!--            const a = document.createElement('a');-->
+<!--            a.href = url;-->
+<!--            a.download = filename;-->
+<!--            document.body.appendChild(a);-->
+<!--            a.click();-->
+<!--            document.body.removeChild(a);-->
+<!--            window.URL.revokeObjectURL(url);-->
+<!--        }-->
+
+<!--        function updateUserStats() {-->
+<!--            const totalUsers = document.querySelectorAll('#usersTableBody tr').length;-->
+<!--            const adminUsers = document.querySelectorAll('#usersTableBody tr[data-role="admin"]').length;-->
+<!--            const activeUsers = Math.max(0, totalUsers - 1); // Simulate active users-->
+<!--            const newUsers = Math.max(0, totalUsers - 8); // Simulate new users-->
+
+<!--            document.getElementById('total-users').textContent = totalUsers;-->
+<!--            document.getElementById('admin-users').textContent = adminUsers;-->
+<!--            document.getElementById('active-users').textContent = activeUsers;-->
+<!--            document.getElementById('new-users').textContent = newUsers;-->
+<!--        }-->
+
+<!--        // Message system-->
+<!--        function showMessage(message, type = 'info') {-->
+<!--            const messageContainer = document.getElementById('messageContainer');-->
+<!--            const messageDiv = document.createElement('div');-->
+
+<!--            const colors = {-->
+<!--                success: '#28a745',-->
+<!--                error: '#dc3545',-->
+<!--                info: '#17a2b8',-->
+<!--                warning: '#ffc107'-->
+<!--            };-->
+
+<!--            messageDiv.style.cssText = `-->
+<!--                background: ${colors[type]};-->
+<!--                color: white;-->
+<!--                padding: 1rem 1.5rem;-->
+<!--                border-radius: 10px;-->
+<!--                margin-bottom: 0.5rem;-->
+<!--                box-shadow: 0 4px 15px rgba(0,0,0,0.2);-->
+<!--                animation: slideInRight 0.3s ease;-->
+<!--                cursor: pointer;-->
+<!--            `;-->
+
+<!--            messageDiv.innerHTML = `-->
+<!--                <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'times' : 'info'}-circle"></i>-->
+<!--                ${message}-->
+<!--            `;-->
+
+<!--            messageDiv.onclick = () => messageDiv.remove();-->
+<!--            messageContainer.appendChild(messageDiv);-->
+
+<!--            setTimeout(() => {-->
+<!--                if (messageDiv.parentNode) {-->
+<!--                    messageDiv.remove();-->
+<!--                }-->
+<!--            }, 5000);-->
+<!--        }-->
+
+<!--        // Navigation-->
+<!--        function goBack() {-->
+<!--            console.log('Going back to dashboard');-->
+<!--            showMessage('Returning to dashboard...', 'info');-->
+<!--            // Here you would navigate back or use history.back()-->
+<!--        }-->
+
+<!--        // Close modal when clicking outside-->
+<!--        window.onclick = function(event) {-->
+<!--            const modal = document.getElementById('deleteModal');-->
+<!--            if (event.target === modal) {-->
+<!--                closeDeleteModal();-->
+<!--            }-->
+<!--        }-->
+
+<!--        // Initialize page-->
+<!--        document.addEventListener('DOMContentLoaded', function() {-->
+<!--            console.log('User Management page loaded');-->
+
+<!--            // Add some dynamic behaviors-->
+<!--            addHoverEffects();-->
+<!--            initializeAnimations();-->
+<!--        });-->
+
+<!--        function addHoverEffects() {-->
+<!--            // Add subtle animations to cards and buttons-->
+<!--            const cards = document.querySelectorAll('.user-card, .stat-card');-->
+<!--            cards.forEach(card => {-->
+<!--                card.addEventListener('mouseenter', function() {-->
+<!--                    this.style.transform = 'translateY(-5px) scale(1.02)';-->
+<!--                });-->
+
+<!--                card.addEventListener('mouseleave', function() {-->
+<!--                    this.style.transform = 'translateY(0) scale(1)';-->
+<!--                });-->
+<!--            });-->
+<!--        }-->
+
+<!--        function initializeAnimations() {-->
+<!--            // Stagger animation for cards-->
+<!--            const cards = document.querySelectorAll('.user-card');-->
+<!--            cards.forEach((card, index) => {-->
+<!--                card.style.animationDelay = `${index * 0.1}s`;-->
+<!--            });-->
+
+<!--            // Add loading animation to stats-->
+<!--            const statValues = document.querySelectorAll('.stat-value');-->
+<!--            statValues.forEach((stat, index) => {-->
+<!--                const finalValue = parseInt(stat.textContent);-->
+<!--                stat.textContent = '0';-->
+
+<!--                setTimeout(() => {-->
+<!--                    animateNumber(stat, 0, finalValue, 1000);-->
+<!--                }, index * 200);-->
+<!--            });-->
+<!--        }-->
+
+<!--        function animateNumber(element, start, end, duration) {-->
+<!--            const startTime = performance.now();-->
+
+<!--            function update(currentTime) {-->
+<!--                const elapsed = currentTime - startTime;-->
+<!--                const progress = Math.min(elapsed / duration, 1);-->
+
+<!--                const current = Math.floor(start + (end - start) * progress);-->
+<!--                element.textContent = current;-->
+
+<!--                if (progress < 1) {-->
+<!--                    requestAnimationFrame(update);-->
+<!--                }-->
+<!--            }-->
+
+<!--            requestAnimationFrame(update);-->
+<!--        }-->
+
+<!--        // Add CSS animations-->
+<!--        const style = document.createElement('style');-->
+<!--        style.textContent = `-->
+<!--            @keyframes slideInRight {-->
+<!--                from {-->
+<!--                    transform: translateX(300px);-->
+<!--                    opacity: 0;-->
+<!--                }-->
+<!--                to {-->
+<!--                    transform: translateX(0);-->
+<!--                    opacity: 1;-->
+<!--                }-->
+<!--            }-->
+
+<!--            .user-card {-->
+<!--                animation: fadeInUp 0.8s ease both;-->
+<!--            }-->
+<!--        `;-->
+<!--        document.head.appendChild(style);-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - SuchiGo Admin</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: #333;
+            padding: 2rem;
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-title h2 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+
+        .page-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+
+        .table-container {
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .table-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        /* Desktop Table */
+        .desktop-table {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        tr:hover td {
+            background-color: rgba(76, 175, 80, 0.05);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .action-cell {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Mobile Cards */
+        .mobile-cards {
+            display: none;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e9ecef;
+            transition: transform 0.2s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .card-user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .card-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .card-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .card-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .card-label {
+            font-weight: 600;
+            color: #666;
+            min-width: 80px;
+        }
+
+        .card-value {
+            color: #333;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(248, 249, 250, 0.95);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e9ecef;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .role-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: white;
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+                padding: 1.5rem;
+            }
+
+            .page-title h2 {
+                font-size: 1.5rem;
+            }
+
+            .table-container {
+                padding: 1rem;
+            }
+
+            .table-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                justify-content: center;
+            }
+
+            .desktop-table {
+                display: none;
+            }
+
+            .mobile-cards {
+                display: block;
+            }
+
+            .stats-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .page-header {
+                padding: 1rem;
+            }
+
+            .page-title {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .page-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .user-card {
+                padding: 1rem;
+            }
+
+            .card-user-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.8rem;
+            }
+
+            .card-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+
+            .card-label {
+                min-width: auto;
+            }
+
+            .card-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title">
+                <div class="page-icon">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <h2>User Management</h2>
+            </div>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="stats-summary">
+            <div class="stat-card">
+                <div class="stat-value" id="total-users">{{ users|length }}</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="admin-users">0</div>
+                <div class="stat-label">Admin Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="active-users">0</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-info">
+                    <i class="fas fa-info-circle"></i>
+                    Showing all system users
+                </div>
+                <div class="action-buttons">
+                    <a href="{% url 'super_admin_dashboard:user_create' %}" class="btn">
+                        <i class="fas fa-plus"></i>
+                        Create User
+                    </a>
+                    <a href="#" class="btn btn-secondary">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </a>
+                </div>
+            </div>
+
+            <!-- Desktop Table View -->
+            <div class="desktop-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-user"></i> Username</th>
+                            <th><i class="fas fa-envelope"></i> Email</th>
+                            <th><i class="fas fa-user-tag"></i> Role</th>
+                            <th><i class="fas fa-cog"></i> Actions</th>
+                            <th><i class="fas fa-users-cog"></i> Role Management</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>
+                                <strong>{{ user.id }}</strong>
+                            </td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        {{ user.username|first|upper }}
+                                    </div>
+                                    <div>
+                                        <strong>{{ user.username }}</strong>
+                                        <br>
+                                        <small style="color: #666;">@{{ user.username }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="user-info">
+                                    <i class="fas fa-envelope" style="color: #2196F3;"></i>
+                                    <span>{{ user.email }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="role-badge">{{ user.get_role_display }}</span>
+                            </td>
+                            <td>
+                                <div class="action-cell">
+                                    <a href="{% url 'super_admin_dashboard:user_update' user.id %}" class="btn btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                        Edit
+                                    </a>
+                                    <a href="{% url 'super_admin_dashboard:user_delete' user.id %}" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="{% url 'super_admin_dashboard:map_role' user.id %}" class="btn btn-info">
+                                    <i class="fas fa-user-plus"></i>
+                                    Map Role
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="mobile-cards">
+                {% for user in users %}
+                <div class="user-card">
+                    <div class="card-header">
+                        <div class="card-user-info">
+                            <div class="card-avatar">
+                                {{ user.username|first|upper }}
+                            </div>
+                            <div>
+                                <strong>{{ user.username }}</strong>
+                                <br>
+                                <small style="color: #666;">@{{ user.username }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-details">
+                        <div class="card-row">
+                            <span class="card-label">
+                                <i class="fas fa-hashtag"></i> ID:
+                            </span>
+                            <span class="card-value">{{ user.id }}</span>
+                        </div>
+
+                        <div class="card-row">
+                            <span class="card-label">
+                                <i class="fas fa-envelope"></i> Email:
+                            </span>
+                            <span class="card-value">{{ user.email }}</span>
+                        </div>
+
+                        <div class="card-row">
+                            <span class="card-label">
+                                <i class="fas fa-user-tag"></i> Role:
+                            </span>
+                            <span class="card-value">
+                                <span class="role-badge">{{ user.get_role_display }}</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions">
+                        <a href="{% url 'super_admin_dashboard:user_update' user.id %}" class="btn btn-warning">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </a>
+                        <a href="{% url 'super_admin_dashboard:user_delete' user.id %}" class="btn btn-danger">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </a>
+                        <a href="{% url 'super_admin_dashboard:map_role' user.id %}" class="btn btn-info">
+                            <i class="fas fa-user-plus"></i>
+                            Map Role
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update stats dynamically
+        document.addEventListener('DOMContentLoaded', function() {
+            // Count admin users (this would normally come from backend)
+            const totalUsers = document.querySelectorAll('tbody tr').length;
+            document.getElementById('total-users').textContent = totalUsers;
+
+            // You can add more dynamic stats here
+            document.getElementById('admin-users').textContent = Math.floor(totalUsers * 0.3);
+            document.getElementById('active-users').textContent = Math.floor(totalUsers * 0.8);
+        });
+    </script>
+</body>
+</html>

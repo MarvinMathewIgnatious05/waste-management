@@ -37,9 +37,11 @@ def login_user(request):
             if user is not None:
                 login(request, user)
                 if user.is_superuser or user.role == 2:
-                    return redirect('admin_dashboard:admin_dashboard')
+                    return redirect('super_admin_dashboard:super_admin_dashboard')
                 elif user.role == 1:
                     return redirect('waste_collector:waste_collector_dashboard')
+                elif user.role == 3:
+                    return redirect('admin_dashboard:admin_dashboard')
                 else:
                     return redirect('customer:customer_dashboard')
         messages.error(request, 'Invalid username or password.')

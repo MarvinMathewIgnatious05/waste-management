@@ -20,12 +20,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', include('admin_dashboard.urls', namespace='adminpanel')),
+    path('admin/', include('super_admin_dashboard.urls', namespace='adminpanel')),
 
     path('', include('authentication.urls')),
     path('customer-dashboard/', include('customer_dashboard.urls')),
 
     path('collector-dashboard/', include('waste_collector_dashboard.urls')),
+
+    path('admin-dashboard/', include('admin_dashboard.urls')),
 
 ]
 if settings.DEBUG:

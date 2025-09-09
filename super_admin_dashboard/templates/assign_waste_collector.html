@@ -27,7 +27,7 @@
 
 <!--    <button type="submit">Assign</button>-->
 <!--</form>-->
-<!--<a href="{% url 'admin_dashboard:view_customer_waste_info' %}">⬅ Back</a>-->
+<!--<a href="{% url 'super_admin_dashboard:view_customer_waste_info' %}">⬅ Back</a>-->
 
 
 <!--</body>-->
@@ -396,7 +396,7 @@
                         <div class="info-value">{{ waste_info.user.username }}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Municipality</div>
+                        <div class="info-label">Local Administration</div>
                         <div class="info-value">{{ waste_info.municipality }}</div>
                     </div>
                     <div class="info-item">
@@ -404,16 +404,16 @@
                         <div class="info-value">{{ waste_info.ward }}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Building No</div>
-                        <div class="info-value">{{ waste_info.building_no }}</div>
+                        <div class="info-label">Address</div>
+                        <div class="info-value">{{ waste_info.pickup_address }}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Street Name</div>
-                        <div class="info-value">{{ waste_info.street_name }}</div>
+                        <div class="info-label">Land Mark</div>
+                        <div class="info-value">{{ waste_info.landmark }}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Pincode</div>
-                        <div class="info-value">{{ waste_info.pincode }}</div>
+                        <div class="info-label">Waste Type</div>
+                        <div class="info-value">{{ waste_info.waste_type }}</div>
                     </div>
                 </div>
 
@@ -440,7 +440,7 @@
                     </div>
 
                     <div class="button-group">
-                        <a href="{% url 'admin_dashboard:view_customer_waste_info' %}" class="btn btn-secondary back-link">
+                        <a href="{% url 'super_admin_dashboard:view_customer_waste_info' %}" class="btn btn-secondary back-link">
                             ← Back to Dashboard
                         </a>
                         <button type="submit" class="btn btn-primary" id="submitBtn">

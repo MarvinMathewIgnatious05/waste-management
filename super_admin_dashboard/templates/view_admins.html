@@ -1,0 +1,416 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Users - SuchiGo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: #333;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="90" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-50px, -50px); }
+        }
+
+        .header h2 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .actions {
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-back {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-delete {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            box-shadow: 0 3px 10px rgba(244, 67, 54, 0.3);
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+        }
+
+        .table-container {
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+            overflow-x: auto;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .users-table th {
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .users-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        .users-table tr:nth-child(even) {
+            background-color: transparent;
+        }
+
+        .users-table tr:hover {
+            background-color: rgba(76, 175, 80, 0.05);
+            transform: none;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+                padding: 1.5rem;
+            }
+
+            .header h2 {
+                font-size: 1.8rem;
+            }
+
+            .actions {
+                padding: 1.5rem;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+
+            .table-container {
+                padding: 1rem;
+            }
+
+            .users-table {
+                font-size: 14px;
+            }
+
+            .users-table th,
+            .users-table td {
+                padding: 0.8rem 0.5rem;
+            }
+
+            /* Stack table for very small screens */
+            @media (max-width: 600px) {
+                .users-table,
+                .users-table thead,
+                .users-table tbody,
+                .users-table th,
+                .users-table td,
+                .users-table tr {
+                    display: block;
+                }
+
+                .users-table thead tr {
+                    position: absolute;
+                    top: -9999px;
+                    left: -9999px;
+                }
+
+                .users-table tr {
+                    border: 1px solid #e9ecef;
+                    margin-bottom: 10px;
+                    padding: 15px;
+                    border-radius: 10px;
+                    background: white;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                }
+
+                .users-table td {
+                    border: none;
+                    border-bottom: 1px solid #eee;
+                    position: relative;
+                    padding-left: 50% !important;
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                }
+
+                .users-table td:before {
+                    content: attr(data-label) ": ";
+                    position: absolute;
+                    left: 6px;
+                    width: 45%;
+                    padding-right: 10px;
+                    white-space: nowrap;
+                    font-weight: bold;
+                    color: #4CAF50;
+                }
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        /* Icon styles */
+        .icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="page-title">
+                <div class="page-icon">
+                    <svg class="icon" style="width: 30px; height: 30px;" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                    </svg>
+                </div>
+                <h2> Admin Users </h2>
+            </div>
+            <a href="{% url 'super_admin_dashboard:super_admin_dashboard' %}" class="btn btn-back">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"/>
+                </svg>
+                Back to Dashboard
+            </a>
+        </div>
+
+        <div class="actions">
+            <a href="#" class="btn btn-add">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                </svg>
+                Add New User
+            </a>
+        </div>
+
+        <div class="table-container">
+            {% if admins %}
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in admins %}
+                    <tr>
+                        <td data-label="Username">{{ user.username }}</td>
+                        <td data-label="Name">{{ user.first_name }} {{ user.last_name }}</td>
+                        <td data-label="Email">{{ user.email }}</td>
+                        <td data-label="Contact">{{ user.contact_number }}</td>
+                        <td data-label="Actions">
+                            <button class="btn btn-delete" onclick="confirmDelete('{{ user.username }}')">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+                                </svg>
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <svg width="120" height="120" viewBox="0 0 24 24" style="margin-bottom: 20px; opacity: 0.3;">
+                    <path fill="#ccc" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                </svg>
+                <h3>No Admin Users Found</h3>
+                <p>Start by adding your first admin user to get started.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(username) {
+            if (confirm(`Are you sure you want to delete user "${username}"? This action cannot be undone.`)) {
+                // Add your delete logic here
+                // Example: window.location.href = `/delete-user/${username}/`;
+                alert(`Delete functionality for user "${username}" would be implemented here.`);
+            }
+        }
+
+        // Add smooth scrolling and responsive table enhancements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add loading animation to buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (!this.classList.contains('btn-delete')) {
+                        this.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            this.style.transform = '';
+                        }, 150);
+                    }
+                });
+            });
+
+            // Enhanced mobile experience
+            if (window.innerWidth <= 600) {
+                const tableRows = document.querySelectorAll('.users-table tr');
+                tableRows.forEach(row => {
+                    row.addEventListener('click', function() {
+                        this.style.backgroundColor = '#e8f5e8';
+                        setTimeout(() => {
+                            this.style.backgroundColor = '';
+                        }, 200);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
