@@ -5,6 +5,7 @@ class WasteCollection(models.Model):
     collector = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='collections')
     customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='waste_collected')
     municipality = models.CharField(max_length=100)
+
     ward = models.CharField(max_length=50)
     location = models.CharField(max_length=200)
     building_no = models.CharField(max_length=50)

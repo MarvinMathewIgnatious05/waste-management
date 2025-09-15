@@ -1,62 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Title</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<h2>Assign Waste Collector</h2>-->
-<!--<form method="post">-->
-<!--    {% csrf_token %}-->
-<!--    <p><strong>Customer:</strong> {{ waste_info.user.username }}</p>-->
-<!--    <p><strong>Municipality:</strong> {{ waste_info.municipality }}</p>-->
-<!--    <p><strong>Ward:</strong> {{ waste_info.ward }}</p>-->
-<!--    <p><strong>Building No:</strong> {{ waste_info.building_no }}</p>-->
-<!--    <p><strong>Street Name:</strong> {{ waste_info.street_name }}</p>-->
-<!--    <p><strong>Pincode:</strong> {{ waste_info.pincode }}</p>-->
-<!--    <p><strong>Description:</strong> {{ waste_info.description }}</p>-->
-
-
-
-<!--    <label>Select Waste Collector:</label>-->
-<!--    <select name="collector" required>-->
-<!--        {% for c in collectors %}-->
-<!--        <option value="{{ c.id }}">{{ c.username }} - {{ c.first_name }}</option>-->
-<!--        {% endfor %}-->
-<!--    </select><br><br>-->
-
-<!--    <button type="submit">Assign</button>-->
-<!--</form>-->
-<!--<a href="{% url 'super_admin_dashboard:view_customer_waste_info' %}">⬅ Back</a>-->
-
-
-<!--</body>-->
-<!--</html>-->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -73,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
+            background: linear-gradient(135deg, #e8f5e8 0%, #e1f3f8 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -397,7 +338,7 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label">Local Administration</div>
-                        <div class="info-value">{{ waste_info.municipality }}</div>
+                        <div class="info-value">{{ waste_info.localbody }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Ward</div>

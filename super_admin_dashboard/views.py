@@ -51,31 +51,6 @@ def user_list(request):
     users = CustomUser.objects.all()
     return render(request, "users_list.html", {"users": users})
 
-# Create new user
-# def user_create(request):
-#     if request.method == "POST":
-#         form = UserForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, "User created successfully")
-#             return redirect("super_admin_dashboard:users_list")
-#     else:
-#         form = UserForm()
-#     return render(request, "user_form.html", {"form": form})
-#
-# # Update user
-# def user_update(request, user_id):
-#     user = get_object_or_404(CustomUser, id=user_id)
-#     if request.method == "POST":
-#         form = UserForm(request.POST, request.FILES, instance=user)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, "User updated successfully")
-#             return redirect("super_admin_dashboard:user_list")
-#     else:
-#         form = UserForm(instance=user)
-#     return render(request, "user_form.html", {"form": form})
-
 
 
 
@@ -128,19 +103,31 @@ def user_delete(request, user_id):
 
 
 
+from django.shortcuts import render
+from customer_dashboard.models import CustomerWasteInfo, CustomerPickupDate
+from authentication.models import CustomUser
 
-#customerwasteinfoview
-#adminassigntowastecollector
-
-# View all CustomerWasteInfo entries
 def view_customer_wasteinfo(request):
-    waste_infos = CustomerWasteInfo.objects.all()
+    # Fetch all customer waste profiles with related fields
+    waste_infos = CustomerWasteInfo.objects.select_related(
+        'state', 'district', 'localbody', 'assigned_collector', 'user'
+    ).all()
+
+    # Fetch all collectors
     collectors = CustomUser.objects.filter(role=1)
+
+    # Map waste_info_id → pickup date
+    pickup_dates = {}
+    pickups = CustomerPickupDate.objects.select_related('localbody_calendar', 'waste_info').all()
+    for pickup in pickups:
+        if pickup.waste_info:
+            pickup_dates[pickup.waste_info.id] = pickup.localbody_calendar.date
+
     return render(request, 'view_customer_wasteinfo.html', {
         'waste_infos': waste_infos,
         'collectors': collectors,
+        'pickup_dates': pickup_dates,
     })
-
 
 # Assign a waste collector to a CustomerWasteInfo entry
 def assign_waste_collector(request, pk):
@@ -170,29 +157,7 @@ def view_collected_data(request):
     })
 
 
-
-
-
-
-
-
-
-
-
-
-
-# def map_role(request, user_id):
-#     user = get_object_or_404(CustomUser, id=user_id)
-#     if request.method == "POST":
-#         new_role = request.POST.get("role")
-#         if new_role in dict(CustomUser.ROLE_CHOICES).keys():
-#             user.role = int(new_role)
-#             user.save()
-#             return redirect("super_admin_dashboard:users_list")
-#     return render(request, "map_role.html", {"user": user, "roles": CustomUser.ROLE_CHOICES})
-
-
-
+# ////// MAP_ROLE
 
 def map_role(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
@@ -208,3 +173,138 @@ def map_role(request, user_id):
             except ValueError:
                 pass  # Ignore invalid input
     return render(request, "map_role.html", {"user": user, "roles": CustomUser.ROLE_CHOICES})
+
+
+
+
+
+
+
+# ////////////////////////////      CALENDAR SET UP     ///////////////////////////////////
+
+
+import json
+from datetime import date, datetime, timedelta
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseBadRequest
+from django.views.decorators.http import require_POST, require_GET
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils.dateparse import parse_date
+
+from .models import State, District, LocalBody, LocalBodyCalendar
+from .utils import is_super_admin
+
+
+
+
+
+@login_required
+@user_passes_test(is_super_admin)
+def calendar_view(request):
+    """Main page where admin picks state/district/localbody and sees FullCalendar."""
+    states = State.objects.all().order_by("name")
+    return render(request, "calendar.html", {"states": states})
+
+
+@login_required
+@user_passes_test(is_super_admin)
+@require_GET
+def load_districts(request, state_id):
+    districts = District.objects.filter(state_id=state_id).values("id", "name")
+    return JsonResponse(list(districts), safe=False)
+
+
+@login_required
+@user_passes_test(is_super_admin)
+@require_GET
+def load_localbodies(request, district_id):
+    lbs = LocalBody.objects.filter(district_id=district_id).values("id", "name", "body_type")
+    return JsonResponse(list(lbs), safe=False)
+
+
+@login_required
+@user_passes_test(is_super_admin)
+@require_GET
+def get_calendar_dates(request, localbody_id):
+    events = LocalBodyCalendar.objects.filter(localbody_id=localbody_id).values("id", "date")
+    # FullCalendar expects events with at least id and start
+    data = [{"id": e["id"], "title": "Assigned", "start": e["date"].isoformat(), "color": "green"} for e in events]
+    return JsonResponse(data, safe=False)
+
+
+@login_required
+@user_passes_test(is_super_admin)
+@require_POST
+def create_calendar_date(request, localbody_id):
+    """Create one date or range. Expects 'date' in YYYY-MM-DD or 'start' & 'end' for ranges."""
+    lb = get_object_or_404(LocalBody, pk=localbody_id)
+
+    # support single-date or start/end
+    start = request.POST.get("start")
+    end = request.POST.get("end")
+    single = request.POST.get("date")
+
+    created = []
+    if single:
+        d = parse_date(single)
+        if not d:
+            return HttpResponseBadRequest("Invalid date")
+        entry, created_flag = LocalBodyCalendar.objects.get_or_create(localbody=lb, date=d)
+        if created_flag:
+            created.append({"id": entry.id, "date": entry.date.isoformat()})
+        return JsonResponse({"status": "created", "created": created})
+
+    if start and end:
+        s = parse_date(start)
+        e = parse_date(end)
+        if not s or not e:
+            return HttpResponseBadRequest("Invalid start/end")
+        cur = s
+        while cur <= e:
+            entry, created_flag = LocalBodyCalendar.objects.get_or_create(localbody=lb, date=cur)
+            if created_flag:
+                created.append({"id": entry.id, "date": entry.date.isoformat()})
+            cur += timedelta(days=1)
+        return JsonResponse({"status": "created_range", "created": created})
+
+    return HttpResponseBadRequest("Provide 'date' or 'start' and 'end'.")
+
+
+@login_required
+@user_passes_test(is_super_admin)
+@require_POST
+def update_calendar_date(request, pk):
+    """Change date for an existing LocalBodyCalendar entry. Expect 'new_date' YYYY-MM-DD"""
+    entry = get_object_or_404(LocalBodyCalendar, pk=pk)
+    new_date_raw = request.POST.get("new_date")
+    if not new_date_raw:
+        return HttpResponseBadRequest("Missing new_date")
+    new_date = parse_date(new_date_raw.split("T")[0])
+    if not new_date:
+        return HttpResponseBadRequest("Invalid date")
+    # prevent duplicates: if another entry exists for that localbody on same date -> reject
+    exists = LocalBodyCalendar.objects.filter(localbody=entry.localbody, date=new_date).exclude(pk=entry.pk).exists()
+    if exists:
+        return JsonResponse({"status": "conflict", "message": "Date already assigned"}, status=409)
+    entry.date = new_date
+    entry.save()
+    return JsonResponse({"status": "updated", "id": entry.id, "date": entry.date.isoformat()})
+
+
+@login_required
+@user_passes_test(is_super_admin)
+@require_POST
+def delete_calendar_date(request, pk):
+    entry = get_object_or_404(LocalBodyCalendar, pk=pk)
+    entry.delete()
+    return JsonResponse({"status": "deleted", "id": pk})
+
+
+
+
+
+
+
+
+

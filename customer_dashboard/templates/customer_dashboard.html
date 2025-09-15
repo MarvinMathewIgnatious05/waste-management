@@ -495,6 +495,11 @@
             background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
             color: white;
         }
+        .btn-tertiary {
+            background: linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%);
+            color: white;
+
+        }
 
         .btn-outline {
             background: transparent;
@@ -1227,8 +1232,9 @@
                 </div>
                 <div class="card-content">
                     <div style="display: grid; gap: 0.75rem;">
-                        <a href="{% url 'customer:waste_create' %}" class="btn btn-primary">📦 Book Pickup</a>
-                        <a href="{% url 'customer:waste_delete' %}" class="btn btn-secondary">🗑️ Request Bin</a>
+                        <a href="{% url 'customer:waste_profile_create' %}" class="btn btn-primary">📦 Book Pickup</a>
+                        <a href="{% url 'customer:waste_profile_list' %}" class="btn btn-tertiary">📜 Waste Pickup Records</a>
+                        <a href="" class="btn btn-secondary">🗑️ Request Bin</a>
                         <a href="#" class="btn btn-outline">⚠️ Report Issue</a>
                     </div>
                 </div>

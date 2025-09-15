@@ -26,4 +26,20 @@ urlpatterns = [
     path('collected-data/',views.view_collected_data, name='view_collected_data'),
 
 
+
+    #CALENDAR
+
+    path("calendar/", views.calendar_view, name="calendar"),
+    path("calendar/districts/<int:state_id>/", views.load_districts, name="load_districts"),
+    path("calendar/localbodies/<int:district_id>/", views.load_localbodies, name="load_localbodies"),
+    path("calendar/events/<int:localbody_id>/", views.get_calendar_dates, name="get_calendar_dates"),
+
+    path("calendar/create/<int:localbody_id>/", views.create_calendar_date, name="create_calendar_date"),
+    path("calendar/update/<int:pk>/", views.update_calendar_date, name="update_calendar_date"),
+    path("calendar/delete/<int:pk>/", views.delete_calendar_date, name="delete_calendar_date"),
+
+
+
+
+
 ]
