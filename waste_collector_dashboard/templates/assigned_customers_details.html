@@ -488,23 +488,43 @@
                     <table border="1">
                         <thead>
                             <tr>
-                                <th>Customer Name</th>
-                                <th>Municipality</th>
-                                <th>Ward</th>
-                                <th>Street</th>
-                                <th>Building No</th>
-                                <th>Pincode</th>
-                                <th>Action</th>
+                <th>Customer Name</th>
+                <th>Contact Number</th>
+                <th>Secondary Number</th>
+                <th>Pickup Address</th>
+                <th>State</th>
+                <th>District</th>
+                <th>Local Body</th>
+                <th>Pickup Date</th>
+                <th>Ward</th>
+                <th>Bags</th>
+                <th>Waste Type</th>
+                <th>Pincode</th>
+                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for info in assigned_customers %}
                                 <tr class="fade-in collection-ready">
                                     <td>{{ info.user.get_full_name }}</td>
-                                    <td>{{ info.municipality }}</td>
+                                    <td>{{ info.user.contact_number }}</td>
+                                    <td>{{ info.secondary_number }}</td>
+                                    <td>{{ info.pickup_address }}</td>
+                                    <td>{{ info.state }}</td>
+                                    <td>{{ info.district }}</td>
+                                    <td>{{ info.localbody }}</td>
+                                    <td>
+  {% with pickup=info.customerpickupdate_set.first %}
+      {% if pickup %}
+          {{ pickup.localbody_calendar.date }} (ID: {{ pickup.localbody_calendar.id }})
+      {% else %}
+          Not Selected
+      {% endif %}
+  {% endwith %}
+</td>
                                     <td>{{ info.ward }}</td>
-                                    <td>{{ info.street_name }}</td>
-                                    <td>{{ info.building_no }}</td>
+                                    <td>{{ info.number_of_bags}}</td>
+                                    <td>{{ info.waste_type }}</td>
                                     <td>{{ info.pincode }}</td>
                                     <td>
                                         <form action="{% url 'waste_collector:waste_collect_create' %}" method="get">
