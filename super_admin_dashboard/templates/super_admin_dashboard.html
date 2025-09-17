@@ -721,7 +721,7 @@
                 </div>
                 <div class="nav-item">
                     <a href="{% url 'super_admin_dashboard:view_admins' %}" class="nav-link" onclick="showContent('admin-mgmt')">
-                        <i class="fas fa-user-shield nav-icon"></i>
+                        <i class="fas fa-user-cog nav-icon"></i>
                         <span class="nav-text">Admin Management</span>
                     </a>
                 </div>
@@ -732,8 +732,15 @@
                     </a>
                 </div>
                 <div class="nav-item">
+    <a href="{% url 'super_admin_dashboard:create_waste_profile' %}" class="nav-link" onclick="showContent('admin-mgmt')">
+        <!-- Improved icon -->
+        <i class="fas fa-cart-plus nav-icon"></i>
+        <span class="nav-text">Create Order</span>
+    </a>
+</div>
+                <div class="nav-item">
                     <a href="{% url 'super_admin_dashboard:calendar' %}" class="nav-link" onclick="showContent('admin-mgmt')">
-                        <i class="fas fa-user-shield nav-icon"></i>
+                        <i class="fas fa-calendar-alt nav-icon"></i>
                         <span class="nav-text">Calendar Management</span>
                     </a>
                 </div>

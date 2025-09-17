@@ -13,11 +13,11 @@ class WasteCollectionForm(forms.ModelForm):
     class Meta:
         model = WasteCollection
         fields = [
-            'customer', 'municipality', 'ward', 'location', 'building_no',
+            'customer', 'localbody', 'ward', 'location', 'building_no',
             'street_name', 'kg'
         ]
         widgets = {
-            'municipality': forms.TextInput(attrs={'required': True}),
+            'localbody': forms.TextInput(attrs={'required': True}),
             'ward': forms.TextInput(attrs={'required': True}),
             'location': forms.TextInput(attrs={'required': True}),
             'building_no': forms.TextInput(attrs={'required': True}),

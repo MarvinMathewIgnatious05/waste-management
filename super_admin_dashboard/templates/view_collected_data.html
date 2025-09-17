@@ -17,22 +17,26 @@
             background: linear-gradient(135deg, #e8f5e8 0%, #e1f3f8 100%);
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .container {
             max-width: 1400px;
-            margin: 0 auto;
+            width: 100%;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             backdrop-filter: blur(10px);
+            margin: auto;
         }
 
         .header {
             background: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
             color: white;
-            padding: 30px;
+            padding: 30px 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -61,7 +65,7 @@
         }
 
         .brand-title {
-            font-size: 2.2rem;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
             margin-bottom: 5px;
             position: relative;
             z-index: 1;
@@ -70,7 +74,7 @@
         }
 
         .brand-tagline {
-            font-size: 1rem;
+            font-size: clamp(0.8rem, 2vw, 1rem);
             opacity: 0.9;
             position: relative;
             z-index: 1;
@@ -79,7 +83,7 @@
         }
 
         h2 {
-            font-size: 1.8rem;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
             position: relative;
             z-index: 1;
             opacity: 0.95;
@@ -87,7 +91,7 @@
         }
 
         .content {
-            padding: 40px;
+            padding: 20px;
         }
 
         .table-container {
@@ -98,6 +102,15 @@
             border: 2px solid #e9ecef;
             overflow: hidden;
             margin-bottom: 30px;
+        }
+
+        /* Desktop Table Styles */
+        .desktop-table {
+            display: block;
+        }
+
+        .mobile-cards {
+            display: none;
         }
 
         table {
@@ -111,10 +124,10 @@
             background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
             color: #2c3e50;
             font-weight: 600;
-            padding: 20px 15px;
+            padding: 15px 10px;
             text-align: left;
             border-bottom: 2px solid #2196F3;
-            font-size: 0.9rem;
+            font-size: clamp(0.7rem, 1.5vw, 0.9rem);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             position: sticky;
@@ -123,11 +136,13 @@
         }
 
         table td {
-            padding: 15px;
+            padding: 12px 10px;
             border-bottom: 1px solid #e9ecef;
             color: #2c3e50;
             vertical-align: middle;
-            font-size: 0.95rem;
+            font-size: clamp(0.75rem, 1.5vw, 0.95rem);
+            word-wrap: break-word;
+            max-width: 150px;
         }
 
         table tr {
@@ -148,6 +163,77 @@
             background: linear-gradient(135deg, #f0f0f0 0%, #e1f5fe 100%);
         }
 
+        /* Mobile Card Styles */
+        .card {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .card-row:last-child {
+            border-bottom: none;
+        }
+
+        .card-label {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .card-value {
+            color: #2c3e50;
+            font-size: 0.95rem;
+            word-wrap: break-word;
+            text-align: right;
+            max-width: 60%;
+        }
+
+        .card-value.amount {
+            font-weight: 600;
+            color: #4CAF50;
+            font-size: 1.1rem;
+        }
+
+        .card-value.weight {
+            font-weight: 600;
+            color: #2196F3;
+        }
+
         /* Responsive table */
         .table-wrapper {
             overflow-x: auto;
@@ -155,9 +241,9 @@
         }
 
         /* Image styling */
-        table img {
-            width: 60px;
-            height: 60px;
+        table img, .card-image img {
+            width: 50px;
+            height: 50px;
             object-fit: cover;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -165,9 +251,14 @@
             cursor: pointer;
         }
 
-        table img:hover {
-            transform: scale(3);
-            z-index: 1000;
+        .card-image img {
+            width: 80px;
+            height: 80px;
+        }
+
+        table img:hover, .card-image img:hover {
+            transform: scale(1.1);
+            z-index: 100;
             position: relative;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
@@ -176,7 +267,7 @@
         td:nth-child(8) {
             font-weight: 600;
             color: #4CAF50;
-            font-size: 1rem;
+            font-size: clamp(0.85rem, 1.5vw, 1rem);
         }
 
         /* KG styling */
@@ -192,7 +283,7 @@
             border-radius: 10px;
             padding: 30px;
             margin: 20px 0;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2vw, 1.2rem);
             font-weight: 500;
             color: #e74c3c !important;
             text-align: center !important;
@@ -205,7 +296,7 @@
             padding: 15px 30px;
             border: none;
             border-radius: 10px;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 2vw, 1.1rem);
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -216,6 +307,8 @@
             min-width: 180px;
             box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
             margin-top: 20px;
+            width: 100%;
+            text-align: center;
         }
 
         .btn-secondary:hover {
@@ -228,15 +321,15 @@
         /* Stats cards */
         .stats-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
             margin-bottom: 30px;
         }
 
         .stat-card {
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border-radius: 15px;
-            padding: 25px;
+            padding: 20px 15px;
             text-align: center;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             border-left: 5px solid #2196F3;
@@ -249,61 +342,114 @@
         }
 
         .stat-number {
-            font-size: 2rem;
+            font-size: clamp(1.2rem, 3vw, 2rem);
             font-weight: 700;
             color: #2196F3;
             margin-bottom: 5px;
+            word-wrap: break-word;
         }
 
         .stat-label {
-            font-size: 0.9rem;
+            font-size: clamp(0.7rem, 1.5vw, 0.9rem);
             color: #6c757d;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         /* Mobile responsiveness */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
+            body {
+                padding: 15px;
+            }
+
             .container {
-                margin: 10px;
                 border-radius: 15px;
             }
 
-            .header {
-                padding: 20px;
-            }
-
-            .brand-title {
-                font-size: 1.8rem;
-            }
-
-            h2 {
-                font-size: 1.4rem;
-            }
-
             .content {
-                padding: 20px;
+                padding: 15px;
             }
 
             table th,
             table td {
-                padding: 10px 8px;
-                font-size: 0.85rem;
+                padding: 8px 5px;
+                font-size: 0.8rem;
             }
 
             table img {
                 width: 40px;
                 height: 40px;
             }
+        }
 
-            .btn-secondary {
-                width: 100%;
-                margin-top: 15px;
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+                min-height: auto;
+            }
+
+            .container {
+                border-radius: 10px;
+                margin-top: 10px;
+            }
+
+            .header {
+                padding: 20px 15px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .desktop-table {
+                display: none;
+            }
+
+            .mobile-cards {
+                display: block;
             }
 
             .stats-container {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px 10px;
+            }
+
+            .btn-secondary {
+                min-width: auto;
+                margin-top: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 12px 8px;
+            }
+
+            .card-body {
+                padding: 15px;
+            }
+
+            .card-header {
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+
+            .card-label {
+                font-size: 0.8rem;
+            }
+
+            .card-value {
+                font-size: 0.85rem;
             }
         }
 
@@ -344,6 +490,17 @@
             0%, 100% { background: transparent; }
             50% { background: linear-gradient(135deg, #e8f5e8 0%, #e3f2fd 100%); }
         }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -353,7 +510,6 @@
 
     <div class="container">
         <div class="header">
-
             <h2>♻️ Collected Waste Records</h2>
         </div>
 
@@ -379,12 +535,13 @@
             </div>
 
             {% if all_data %}
-            <div class="table-container">
+            <!-- Desktop Table View -->
+            <div class="table-container desktop-table">
                 <div class="table-wrapper">
                     <table border="1">
                         <tr>
                             <th>👤 Collector</th>
-                            <th>🏛️ Municipality</th>
+                            <th>🏛️ Local Body</th>
                             <th>🏘️ Ward</th>
                             <th>📍 Location</th>
                             <th>🏢 Building No</th>
@@ -397,7 +554,7 @@
                         {% for item in all_data %}
                         <tr>
                             <td>{{ item.collector.username }}</td>
-                            <td>{{ item.municipality }}</td>
+                            <td>{{ item.localbody }}</td>
                             <td>{{ item.ward }}</td>
                             <td>{{ item.location }}</td>
                             <td>{{ item.building_no }}</td>
@@ -416,6 +573,62 @@
                         {% endfor %}
                     </table>
                 </div>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="mobile-cards">
+                {% for item in all_data %}
+                <div class="card">
+                    <div class="card-header">
+                        <span>👤 {{ item.collector.username }}</span>
+                        <span>{{ item.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-row">
+                            <div class="card-label">🏛️ Local Body</div>
+                            <div class="card-value">{{ item.localbody }}</div>
+                        </div>
+                        <div class="card-row">
+                            <div class="card-label">🏘️ Ward</div>
+                            <div class="card-value">{{ item.ward }}</div>
+                        </div>
+                        <div class="card-row">
+                            <div class="card-label">📍 Location</div>
+                            <div class="card-value">{{ item.location }}</div>
+                        </div>
+                        <div class="card-row">
+                            <div class="card-label">🏢 Building</div>
+                            <div class="card-value">{{ item.building_no }}</div>
+                        </div>
+                        <div class="card-row">
+                            <div class="card-label">🛣️ Street</div>
+                            <div class="card-value">{{ item.street_name }}</div>
+                        </div>
+                        <div class="card-row">
+                            <div class="card-label">⚖️ Weight</div>
+                            <div class="card-value weight">{{ item.kg }} KG</div>
+                        </div>
+                        <div class="card-row">
+                            <div class="card-label">💰 Amount</div>
+                            <div class="card-value amount">₹{{ item.total_amount }}</div>
+                        </div>
+                        <div class="card-row">
+                            <div class="card-label">📸 Photo</div>
+                            <div class="card-value card-image">
+                                {% if item.photo %}
+                                    <img src="{{ item.photo.url }}" alt="Photo" onclick="openModal(this.src)">
+                                {% else %}
+                                    <span style="color: #6c757d; font-style: italic;">No Image</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-row">
+                            <div class="card-label">📅 Time</div>
+                            <div class="card-value">{{ item.created_at|date:"H:i" }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
             {% else %}
             <p style="text-align:center; color: #e74c3c;">📋 No records found. Start collecting waste to see data here!</p>
@@ -461,62 +674,68 @@
                 row.style.opacity = '0';
                 row.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.1}s`;
             });
+
+            // Add animation to mobile cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.1}s`;
+            });
         });
 
-      function calculateStats() {
-    const rows = document.querySelectorAll('table tr:not(:first-child)');
-    let totalKG = 0;
-    let totalAmount = 0;
-    const collectors = new Set();
+        function calculateStats() {
+            const rows = document.querySelectorAll('table tr:not(:first-child)');
+            let totalKG = 0;
+            let totalAmount = 0;
+            const collectors = new Set();
 
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        if (cells.length > 0) {
-            const collector = cells[0].textContent.trim();
-            const kg = parseFloat(cells[6].textContent) || 0;
-            const amount = parseFloat(cells[7].textContent) || 0;
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length > 0) {
+                    const collector = cells[0].textContent.trim();
+                    const kg = parseFloat(cells[6].textContent) || 0;
+                    const amount = parseFloat(cells[7].textContent) || 0;
 
-            collectors.add(collector);
-            totalKG += kg;
-            totalAmount += amount;
+                    collectors.add(collector);
+                    totalKG += kg;
+                    totalAmount += amount;
+                }
+            });
+
+            // Update stats with animation
+            animateCounter('totalRecords', rows.length);
+            animateCounter('totalKG', totalKG, 'KG', true);
+            animateCounter('totalAmount', totalAmount, '₹', true);
+            animateCounter('activeCollectors', collectors.size);
         }
-    });
 
-    // Update stats with animation
-    animateCounter('totalRecords', rows.length);
-    animateCounter('totalKG', totalKG, 'KG', true); // allow decimal
-    animateCounter('totalAmount', totalAmount, '₹', true); // allow decimal
-    animateCounter('activeCollectors', collectors.size);
-}
+        function animateCounter(elementId, targetValue, suffix = '', isDecimal = false) {
+            const element = document.getElementById(elementId);
+            const startValue = 0;
+            const duration = 2000;
+            const startTime = performance.now();
 
-function animateCounter(elementId, targetValue, suffix = '', isDecimal = false) {
-    const element = document.getElementById(elementId);
-    const startValue = 0;
-    const duration = 2000;
-    const startTime = performance.now();
+            function updateCounter(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
 
-    function updateCounter(currentTime) {
-        const elapsedTime = currentTime - startTime;
-        const progress = Math.min(elapsedTime / duration, 1);
+                const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+                const currentValue = startValue + (targetValue - startValue) * easeOutCubic;
 
-        const easeOutCubic = 1 - Math.pow(1 - progress, 3);
-        const currentValue = startValue + (targetValue - startValue) * easeOutCubic;
+                const displayValue = isDecimal ? currentValue.toFixed(2) : Math.floor(currentValue);
 
-        // Display decimal if required, else integer
-        const displayValue = isDecimal ? currentValue.toFixed(2) : Math.floor(currentValue);
+                element.textContent =
+                    suffix === '₹' ? `₹${displayValue}` :
+                    suffix === 'KG' ? `${displayValue} KG` :
+                    displayValue;
 
-        element.textContent =
-            suffix === '₹' ? `₹${displayValue}` :
-            suffix === 'KG' ? `${displayValue} KG` :
-            displayValue;
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                }
+            }
 
-        if (progress < 1) {
             requestAnimationFrame(updateCounter);
         }
-    }
-
-    requestAnimationFrame(updateCounter);
-}
 
         function openModal(imageSrc) {
             document.getElementById('modalImage').src = imageSrc;
@@ -528,22 +747,6 @@ function animateCounter(elementId, targetValue, suffix = '', isDecimal = false) 
             document.getElementById('imageModal').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
-
-        // Add CSS animation for fade in
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>

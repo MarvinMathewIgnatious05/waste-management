@@ -38,6 +38,11 @@ urlpatterns = [
     path("calendar/update/<int:pk>/", views.update_calendar_date, name="update_calendar_date"),
     path("calendar/delete/<int:pk>/", views.delete_calendar_date, name="delete_calendar_date"),
 
+#create oder
+    path("create-waste-profile/", views.create_waste_profile, name="create_waste_profile"),
+
+
+
 
 
 

@@ -349,7 +349,7 @@
                     <thead>
                         <tr>
                             <th>Customer</th>
-                            <th>Municipality</th>
+                            <th>Local Body</th>
                             <th>Ward</th>
                             <th>Location</th>
                             <th>Building No</th>
@@ -365,7 +365,7 @@
                     {% for item in collections %}
                         <tr>
                             <td>{{ item.customer.username }}</td>
-                            <td>{{ item.municipality }}</td>
+                            <td>{{ item.localbody }}</td>
                             <td>{{ item.ward }}</td>
                             <td>{{ item.location }}</td>
                             <td>{{ item.building_no }}</td>
@@ -403,8 +403,8 @@
                             <span class="card-value">{{ item.customer.username }}</span>
                         </div>
                         <div class="card-row">
-                            <span class="card-label">Municipality:</span>
-                            <span class="card-value">{{ item.municipality }}</span>
+                            <span class="card-label">Local Body:</span>
+                            <span class="card-value">{{ item.localbody }}</span>
                         </div>
                         <div class="card-row">
                             <span class="card-label">Ward:</span>

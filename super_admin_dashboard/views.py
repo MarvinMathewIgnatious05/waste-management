@@ -12,7 +12,7 @@ def admin_home(request):
 
 
 
-
+@login_required
 def user_list_view(request):
     customers = CustomUser.objects.filter(role=0)
     collectors = CustomUser.objects.filter(role=1)
@@ -23,21 +23,22 @@ def user_list_view(request):
         'collectors': collectors,
         'admins': admins,
     })
-
+@login_required
 def view_customers(request):
     customers = CustomUser.objects.filter(role=0)
     return render(request, 'view_customers.html', {'customers': customers})
 
-
+@login_required
 def view_waste_collectors(request):
     collectors = CustomUser.objects.filter(role=1)
     total_collectors = collectors.count()
     return render(request, 'view_collectors.html', {'collectors': collectors, 'total_collectors': total_collectors})
-
+@login_required
 def view_super_admin(request):
     super_admin = CustomUser.objects.filter(role=2)
     return render(request, "view_super_admin.html", {"super_admin":super_admin})
 
+@login_required
 def view_admins(request):
     admins = CustomUser.objects.filter(role=3)
     return render(request, "view_admins.html", {"admins":admins})
@@ -46,7 +47,7 @@ def view_admins(request):
 
 from .forms import UserForm
 
-
+@login_required
 def user_list(request):
     users = CustomUser.objects.all()
     return render(request, "users_list.html", {"users": users})
@@ -55,6 +56,7 @@ def user_list(request):
 
 
 
+@login_required
 def user_create(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -72,6 +74,7 @@ def user_create(request):
     return render(request, 'user_form.html', {'form': form})
 
 # Update User
+@login_required
 def user_update(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     if request.method == 'POST':
@@ -93,6 +96,7 @@ def user_update(request, user_id):
 
 
 # Delete user
+@login_required
 def user_delete(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     if request.method == "POST":
@@ -107,6 +111,7 @@ from django.shortcuts import render
 from customer_dashboard.models import CustomerWasteInfo, CustomerPickupDate
 from authentication.models import CustomUser
 
+@login_required
 def view_customer_wasteinfo(request):
     # Fetch all customer waste profiles with related fields
     waste_infos = CustomerWasteInfo.objects.select_related(
@@ -130,6 +135,7 @@ def view_customer_wasteinfo(request):
     })
 
 # Assign a waste collector to a CustomerWasteInfo entry
+@login_required
 def assign_waste_collector(request, pk):
     waste_info = get_object_or_404(CustomerWasteInfo, pk=pk)
     if request.method == 'POST':
@@ -148,8 +154,7 @@ def assign_waste_collector(request, pk):
 
 #waste collector collect details from customer
 
-
-
+@login_required
 def view_collected_data(request):
     all_data = WasteCollection.objects.all()
     return render(request, 'view_collected_data.html', {
@@ -158,7 +163,7 @@ def view_collected_data(request):
 
 
 # ////// MAP_ROLE
-
+@login_required
 def map_role(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     if request.method == "POST":
@@ -305,6 +310,80 @@ def delete_calendar_date(request, pk):
 
 
 
+# /////////////// super admin create waste oder
 
 
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from customer_dashboard.models import CustomerWasteInfo, CustomerPickupDate
+from authentication.models import CustomUser
+from super_admin_dashboard.models import State, District, LocalBody
+@login_required
+def create_waste_profile(request):
+    if request.method == "POST":
+        contact_number = request.POST.get("contact_number")
+
+        # Step 1: Check if customer exists
+        try:
+            customer = CustomUser.objects.get(contact_number=contact_number, role=0)
+        except CustomUser.DoesNotExist:
+            messages.error(request, "No registered customer found with this contact number.")
+            return redirect("super_admin_dashboard:create_waste_profile")
+
+        # Step 2: Collect waste info details from form
+        full_name = request.POST.get("full_name")
+        secondary_number = request.POST.get("secondary_number")
+        pickup_address = request.POST.get("pickup_address")
+        landmark = request.POST.get("landmark")
+        pincode = request.POST.get("pincode")
+        state_id = request.POST.get("state")
+        district_id = request.POST.get("district")
+        localbody_id = request.POST.get("localbody")
+        waste_type = request.POST.get("waste_type")
+        number_of_bags = request.POST.get("number_of_bags")
+        ward = request.POST.get("ward")
+        selected_date_id = request.POST.get("selected_date")  # calendar selected date
+
+        # Step 3: Create Waste Profile
+        waste_info = CustomerWasteInfo.objects.create(
+            user=customer,
+            full_name=full_name,
+            secondary_number=secondary_number,
+            pickup_address=pickup_address,
+            landmark=landmark,
+            pincode=pincode,
+            state_id=state_id,
+            district_id=district_id,
+            localbody_id=localbody_id,
+            waste_type=waste_type,
+            number_of_bags=number_of_bags,
+            ward=ward
+        )
+
+        # Step 4: Save pickup date if given
+        if selected_date_id:
+            try:
+                cal = LocalBodyCalendar.objects.get(pk=int(selected_date_id))
+                CustomerPickupDate.objects.create(
+                    user=customer,
+                    waste_info=waste_info,
+                    localbody_calendar=cal
+                )
+            except LocalBodyCalendar.DoesNotExist:
+                messages.warning(request, "Invalid pickup date selected.")
+
+        messages.success(request, f"Waste profile created for {customer.first_name}")
+        return redirect("super_admin_dashboard:view_customer_waste_info")
+
+    # GET request
+    states = State.objects.all()
+    ward_range = range(1, 16)  # Wards 1–15
+    bag_range = range(1, 11)   # Bags 1–10
+
+    return render(request, "superadmin_waste_form.html", {
+        "states": states,
+        "ward_range": ward_range,
+        "bag_range": bag_range,
+    })
 
