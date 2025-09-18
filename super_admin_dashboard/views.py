@@ -387,3 +387,121 @@ def create_waste_profile(request):
         "bag_range": bag_range,
     })
 
+
+
+
+from .forms import WasteProfileForm  # we'll create this form
+
+
+
+@login_required
+def view_waste_profile(request, pk):
+    waste_info = get_object_or_404(
+        CustomerWasteInfo.objects.select_related(
+            "user", "state", "district", "localbody", "assigned_collector"
+        ),
+        pk=pk
+    )
+
+    # pickup dates for this profile
+    pickup_dates = waste_info.customerpickupdate_set.select_related("localbody_calendar")
+
+    return render(request, "superadmin_view_waste.html", {
+        "info": waste_info,
+        "pickup_dates": pickup_dates,
+    })
+
+
+@login_required
+def edit_waste_profile(request, pk):
+    waste_info = get_object_or_404(CustomerWasteInfo, pk=pk)
+
+    # Get all pickup dates linked to this profile
+    existing_pickups = waste_info.customerpickupdate_set.select_related("localbody_calendar")
+
+    if request.method == "POST":
+        form = WasteProfileForm(request.POST, instance=waste_info)
+
+        if form.is_valid():
+            waste_info = form.save()
+
+            # Handle calendar date selection (super admin choosing a new pickup date)
+            selected_date_id = request.POST.get("selected_date")
+            if selected_date_id:
+                try:
+                    cal = LocalBodyCalendar.objects.get(pk=int(selected_date_id))
+                    # Update or create pickup date
+                    pickup_obj, created = CustomerPickupDate.objects.update_or_create(
+                        waste_info=waste_info,
+                        user=waste_info.user,
+                        defaults={"localbody_calendar": cal}
+                    )
+                except LocalBodyCalendar.DoesNotExist:
+                    messages.warning(request, "⚠️ Invalid pickup date selected.")
+
+            messages.success(request, "✅ Waste profile updated successfully.")
+            return redirect("super_admin_dashboard:waste_info_list")
+    else:
+        form = WasteProfileForm(instance=waste_info)
+
+    # Load available calendar dates for this localbody (so admin can change)
+    available_dates = LocalBodyCalendar.objects.filter(localbody=waste_info.localbody).order_by("date")
+
+    return render(request, "superadmin_edit_waste.html", {
+        "form": form,
+        "info": waste_info,
+        "existing_pickups": existing_pickups,
+        "available_dates": available_dates
+    })
+
+
+
+
+@login_required
+def delete_waste_profile(request, pk):
+    waste_info = get_object_or_404(CustomerWasteInfo, pk=pk)
+
+    if request.method == "POST":
+        waste_info.delete()
+        messages.success(request, "🗑️ Waste profile deleted successfully.")
+        return redirect("super_admin_dashboard:waste_info_list")  # ✅ updated
+
+    return render(request, "superadmin_confirm_delete.html", {
+        "info": waste_info
+    })
+
+
+from django.core.paginator import Paginator
+from django.db.models import Q
+
+@login_required
+def waste_info_list(request):
+    search_query = request.GET.get("q", "")   # search input
+    page_number = request.GET.get("page", 1)  # current page
+
+    # Fetch all customer waste profiles
+    waste_infos = CustomerWasteInfo.objects.select_related(
+        "state", "district", "localbody", "assigned_collector", "user"
+    ).prefetch_related("customerpickupdate_set__localbody_calendar")
+
+    # ✅ Search filter (name / phone / address)
+    if search_query:
+        waste_infos = waste_infos.filter(
+            Q(user__first_name__icontains=search_query) |
+            Q(user__last_name__icontains=search_query) |
+            Q(user__contact_number__icontains=search_query) |
+            Q(pickup_address__icontains=search_query)
+        )
+
+    # ✅ Pagination (10 profiles per page)
+    paginator = Paginator(waste_infos.order_by("-id"), 10)
+    page_obj = paginator.get_page(page_number)
+
+    # Fetch all collectors
+    collectors = CustomUser.objects.filter(role=1)
+
+    return render(request, "waste_info_list.html", {
+        "page_obj": page_obj,
+        "collectors": collectors,
+        "search_query": search_query,
+    })

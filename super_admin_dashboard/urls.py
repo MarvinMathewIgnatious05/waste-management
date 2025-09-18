@@ -40,8 +40,14 @@ urlpatterns = [
 
 #create oder
     path("create-waste-profile/", views.create_waste_profile, name="create_waste_profile"),
+# Waste Profile Management
+    path("waste-profiles/<int:pk>/edit/", views.edit_waste_profile, name="edit_waste_profile"),
+    path("waste-profiles/<int:pk>/delete/", views.delete_waste_profile, name="delete_waste_profile"),
+    path("waste-profiles/<int:pk>/view/", views.view_waste_profile, name="view_waste_profile"),
 
 
+
+    path("all-waste-info/", views.waste_info_list, name="waste_info_list"),
 
 
 

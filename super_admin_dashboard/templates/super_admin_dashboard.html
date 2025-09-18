@@ -703,7 +703,7 @@
                 <div class="nav-title">Management</div>
                 <div class="nav-item">
                     <a href="{% url 'super_admin_dashboard:users_list' %}" class="nav-link" onclick="showContent('customer-mgmt')">
-                        <i class="fas fa-users nav-icon"></i>
+                        <i class="fas fa-users-cog"></i>
                         <span class="nav-text">User Management</span>
                     </a>
                 </div>
@@ -738,6 +738,13 @@
         <span class="nav-text">Create Order</span>
     </a>
 </div>
+                <div class="nav-item">
+    <a href="{% url 'super_admin_dashboard:waste_info_list' %}" class="nav-link d-flex align-items-center" onclick="showContent('admin-mgmt')">
+        <i class="fas fa-folder-tree"></i>
+        <span class="nav-text fw-semibold">Managed Waste Profiles</span>
+    </a>
+</div>
+
                 <div class="nav-item">
                     <a href="{% url 'super_admin_dashboard:calendar' %}" class="nav-link" onclick="showContent('admin-mgmt')">
                         <i class="fas fa-calendar-alt nav-icon"></i>
