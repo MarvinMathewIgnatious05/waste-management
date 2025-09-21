@@ -16,7 +16,8 @@ class UserForm(forms.ModelForm):
 
 
 
-from customer_dashboard.models import CustomerWasteInfo
+
+from customer_dashboard.models import CustomerWasteInfo, LocalBody
 
 class WasteProfileForm(forms.ModelForm):
     class Meta:
@@ -34,3 +35,19 @@ class WasteProfileForm(forms.ModelForm):
             "waste_type",
             "number_of_bags",
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Show empty localbody queryset by default
+        self.fields['localbody'].queryset = LocalBody.objects.none()
+
+        if 'district' in self.data:
+            try:
+                district_id = int(self.data.get('district'))
+                self.fields['localbody'].queryset = LocalBody.objects.filter(district_id=district_id).order_by("name")
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk and self.instance.district:
+            # When editing an existing record → preload localbodies of its district
+            self.fields['localbody'].queryset = LocalBody.objects.filter(district=self.instance.district).order_by("name")

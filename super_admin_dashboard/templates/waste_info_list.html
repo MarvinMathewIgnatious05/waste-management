@@ -1,0 +1,1330 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuchiGo - Waste Management Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        :root {
+            --primary-green: #00C853;
+            --secondary-blue: #2196F3;
+            --accent-teal: #00BCD4;
+            --dark-green: #1B5E20;
+            --light-green: #E8F5E8;
+            --text-dark: #212121;
+            --text-light: #757575;
+            --bg-primary: #FAFAFA;
+            --bg-card: #FFFFFF;
+            --border-light: #E1E5E9;
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --shadow-strong: 0 15px 50px rgba(0, 0, 0, 0.15);
+            --gradient-primary: linear-gradient(135deg, #00C853 0%, #00BCD4 50%, #2196F3 100%);
+            --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+            --gradient-hover: linear-gradient(145deg, #f0f8ff 0%, #e3f2fd 100%);
+            --border-radius: 16px;
+            --border-radius-lg: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f5e8 0%, #e1f3f8 100%);
+            background-attachment: fixed;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-wrapper {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-strong);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+        }
+
+        .main-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            z-index: 10;
+        }
+
+        /* Enhanced Header */
+        .header-hero {
+            background: var(--gradient-primary);
+            position: relative;
+            overflow: hidden;
+            padding: 3rem 2rem;
+        }
+
+        .header-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="200" height="200" fill="url(%23dots)"/></svg>');
+            animation: drift 30s linear infinite;
+        }
+
+        @keyframes drift {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(50px) translateY(50px); }
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            animation: float 3s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .brand-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            margin: 0;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+            letter-spacing: -2px;
+        }
+
+        .brand-tagline {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.1rem;
+            font-weight: 400;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Advanced Search Section */
+        .search-container {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            padding: 2.5rem 2rem;
+            position: relative;
+        }
+
+        .search-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-form {
+            position: relative;
+            display: flex;
+            background: white;
+            border-radius: 50px;
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .search-form:focus-within {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(0, 200, 83, 0.1), var(--shadow-medium);
+            transform: translateY(-2px);
+        }
+
+        .search-input {
+            border: none;
+            background: transparent;
+            padding: 20px 200px 20px 30px;
+            font-size: 1.1rem;
+            width: 100%;
+            outline: none;
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .search-button {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
+            margin: 8px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+       .search-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 200, 83, 0.4);
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 2rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            flex: 1;
+            min-width: 200px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Enhanced Table */
+        .table-wrapper {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-light);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-head {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+        }
+
+        .table-head th {
+            padding: 1.5rem 1.2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            text-align: left;
+        }
+
+        .table-body tr {
+            border-bottom: 1px solid var(--border-light);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .table-body tr:hover {
+            background: var(--gradient-hover);
+            transform: scale(1.01);
+        }
+
+        .table-body tr:last-child {
+            border-bottom: none;
+        }
+
+        .table-body td {
+            padding: 1.5rem 1.2rem;
+            border: none;
+            vertical-align: middle;
+        }
+
+        /* Enhanced Status Badges */
+        .status-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-success {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            color: var(--dark-green);
+            border: 1px solid #a5d6a7;
+        }
+
+        .status-warning {
+            background: linear-gradient(135deg, #fff3e0, #ffcc02);
+            color: #e65100;
+            border: 1px solid #ffb74d;
+        }
+
+        .status-danger {
+            background: linear-gradient(135deg, #ffebee, #ef5350);
+            color: #c62828;
+            border: 1px solid #e57373;
+        }
+
+        /* Modern Action Buttons */
+        .action-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2196f3, #21cbf3);
+            color: white;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800, #ffc107);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336, #e91e63);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+            color: white;
+        }
+
+        /* Enhanced Pagination */
+        .pagination-section {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            padding: 2rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .pagination-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 20px;
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            background: white;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .page-btn:hover {
+            border-color: var(--primary-green);
+            background: var(--primary-green);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .page-btn.active {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
+        }
+
+        /* Mobile Card Layout */
+        .mobile-cards {
+            display: none;
+        }
+
+        .mobile-card {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+        }
+
+        .mobile-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .customer-info h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--gradient-card);
+            border-radius: var(--border-radius);
+            margin: 2rem 0;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-text {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .app-container {
+                padding: 15px;
+            }
+
+            .header-hero {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .brand-text h1 {
+                font-size: 2.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 10px;
+            }
+
+            .header-hero {
+                padding: 2rem 1rem;
+            }
+
+            .brand-section {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .brand-logo {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+
+            .brand-text h1 {
+                font-size: 2.2rem;
+            }
+
+            .brand-tagline {
+                font-size: 1rem;
+            }
+
+            .search-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .search-input {
+                padding: 16px 140px 16px 20px;
+                font-size: 1rem;
+            }
+
+            .search-button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .content-section {
+                padding: 1rem;
+            }
+
+            .stats-bar {
+                gap: 0.8rem;
+            }
+
+            .stat-card {
+                min-width: calc(50% - 0.4rem);
+                padding: 1rem;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            /* Hide desktop table, show mobile cards */
+            .table-wrapper {
+                display: none;
+            }
+
+            .mobile-cards {
+                display: block;
+            }
+
+            .pagination-nav {
+                gap: 6px;
+            }
+
+            .page-btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand-text h1 {
+                font-size: 1.8rem;
+            }
+
+            .search-input {
+                padding: 14px 120px 14px 16px;
+            }
+
+            .search-button {
+                padding: 8px 16px;
+            }
+
+            .stat-card {
+                min-width: 100%;
+            }
+
+            .card-details {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .action-group {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .action-btn {
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .page-btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mobile-card {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .table-body tr {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* Loading states */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Enhanced Icons */
+        .icon-wrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            margin-right: 12px;
+        }
+
+        .icon-phone {
+            background: linear-gradient(135deg, #4caf50, #8bc34a);
+            color: white;
+        }
+
+        .icon-location {
+            background: linear-gradient(135deg, #f44336, #ff5722);
+            color: white;
+        }
+
+        .icon-calendar {
+            background: linear-gradient(135deg, #2196f3, #03a9f4);
+            color: white;
+        }
+
+        .icon-waste {
+            background: linear-gradient(135deg, #ff9800, #ffc107);
+            color: white;
+        }
+
+        .icon-user {
+            background: linear-gradient(135deg, #9c27b0, #e91e63);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="main-wrapper">
+            <!-- Enhanced Hero Header -->
+            <div class="header-hero">
+                <div class="brand-section">
+                    <div class="brand-logo">
+                        <i class="fas fa-recycle"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h1>Waste Info </h1>
+                        <div class="brand-tagline">Schedule • Collect • Sustain</div>
+                    </div>
+                </div>
+                <div class="subtitle">Advanced Waste Management </div>
+            </div>
+
+            <!-- Advanced Search Section -->
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <form method="get" class="search-form">
+                        <input type="text"
+                               name="q"
+                               class="search-input"
+                               placeholder="Search customers, phone numbers, addresses, or waste types..."
+                               value="{{ search_query }}">
+                        <button type="submit" class="search-button">
+                            <i class="fas fa-search"></i>
+                            <span>Search</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="content-section">
+                <!-- Stats Bar -->
+                <div class="stats-bar">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ page_obj.paginator.count|default:"0" }}</div>
+                        <div class="stat-label">Total Records</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{ page_obj.paginator.num_pages|default:"0" }}</div>
+                        <div class="stat-label">Total Pages</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{ page_obj.number|default:"0" }}</div>
+                        <div class="stat-label">Current Page</div>
+                    </div>
+                </div>
+
+                <!-- Desktop Table View -->
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead class="table-head">
+                            <tr>
+                                <th>#</th>
+                                <th>Customer</th>
+                                <th>Contact</th>
+                                <th>Address</th>
+                                <th>Created</th>
+                                <th>Pickup Date</th>
+                                <th>Waste Type</th>
+                                <th>Bags</th>
+                                <th>Ward</th>
+                                <th>Collector</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-body">
+                        {% for info in page_obj %}
+                            <tr>
+                                <td><strong>{{ forloop.counter }}</strong></td>
+                                <td>
+                                    <div style="display: flex; align-items: center;">
+                                        <div class="icon-wrapper icon-user">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div>
+                                            <strong>{{ info.user.first_name }} {{ info.user.last_name }}</strong>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center;">
+                                        <div class="icon-wrapper icon-phone">
+                                            <i class="fas fa-phone"></i>
+                                        </div>
+                                        <a href="tel:{{ info.user.contact_number }}" class="text-decoration-none">
+                                            {{ info.user.contact_number }}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center;">
+                                        <div class="icon-wrapper icon-location">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </div>
+                                        <div>{{ info.pickup_address }}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center;">
+                                        <div class="icon-wrapper icon-calendar">
+                                            <i class="fas fa-calendar-plus"></i>
+                                        </div>
+                                        <div>{{ info.created_at|date:"M d, Y" }}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% with pickup=info.customerpickupdate_set.first %}
+                                        {% if pickup %}
+                                            <div class="status-chip status-success">
+                                                <i class="fas fa-check-circle"></i>
+                                                {{ pickup.localbody_calendar.date|date:"M d, Y" }}
+                                            </div>
+                                            <small class="text-muted d-block mt-1">ID: {{ pickup.localbody_calendar.id }}</small>
+                                        {% else %}
+                                            <div class="status-chip status-warning">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                                Not Selected
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center;">
+                                        <div class="icon-wrapper icon-waste">
+                                            <i class="fas fa-trash"></i>
+                                        </div>
+                                        <strong>{{ info.waste_type }}</strong>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-chip status-success">
+                                        {{ info.number_of_bags }}
+                                    </span>
+                                </td>
+                                <td><strong>{{ info.ward }}</strong></td>
+                                <td>
+                                    {% if info.assigned_collector %}
+                                        <div class="status-chip status-success">
+                                            <i class="fas fa-user-check"></i>
+                                            {{ info.assigned_collector.first_name }}
+                                        </div>
+                                    {% else %}
+                                        <div class="status-chip status-danger">
+                                            <i class="fas fa-user-times"></i>
+                                            Not Assigned
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="action-group">
+                                        <a href="{% url 'super_admin_dashboard:view_waste_profile' info.id %}"
+                                           class="action-btn btn-primary">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                        <a href="{% url 'super_admin_dashboard:edit_waste_profile' info.id %}"
+                                           class="action-btn btn-warning">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a href="{% url 'super_admin_dashboard:delete_waste_profile' info.id %}"
+                                           class="action-btn btn-danger"
+                                           onclick="return confirm('Are you sure you want to delete this waste profile?');">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="11">
+                                                                            <div class="empty-state">
+                                        <div class="empty-icon">
+                                            <i class="fas fa-search"></i>
+                                        </div>
+                                        <h3 class="empty-title">No Results Found</h3>
+                                        <p class="empty-text">Try adjusting your search criteria or check back later</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Card View -->
+                <div class="mobile-cards">
+                {% for info in page_obj %}
+                    <div class="mobile-card">
+                        <div class="card-header">
+                            <div class="customer-info">
+                                <h4>{{ info.user.first_name }} {{ info.user.last_name }}</h4>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="icon-wrapper icon-phone" style="width: 24px; height: 24px; margin-right: 4px;">
+                                        <i class="fas fa-phone" style="font-size: 0.7rem;"></i>
+                                    </div>
+                                    <a href="tel:{{ info.user.contact_number }}" class="text-decoration-none">
+                                        {{ info.user.contact_number }}
+                                    </a>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <span class="status-chip status-success" style="font-size: 0.7rem;">
+                                    #{{ forloop.counter }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-map-marker-alt"></i> Address
+                                </div>
+                                <div class="detail-value">{{ info.pickup_address }}</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-calendar-plus"></i> Created
+                                </div>
+                                <div class="detail-value">{{ info.created_at|date:"M d, Y" }}</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-calendar-check"></i> Pickup Date
+                                </div>
+                                <div class="detail-value">
+                                    {% with pickup=info.customerpickupdate_set.first %}
+                                        {% if pickup %}
+                                            <div class="status-chip status-success" style="font-size: 0.7rem;">
+                                                <i class="fas fa-check-circle"></i>
+                                                {{ pickup.localbody_calendar.date|date:"M d" }}
+                                            </div>
+                                        {% else %}
+                                            <div class="status-chip status-warning" style="font-size: 0.7rem;">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                                Not Selected
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-trash"></i> Waste Type
+                                </div>
+                                <div class="detail-value">
+                                    <strong>{{ info.waste_type }}</strong>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-shopping-bag"></i> Bags
+                                </div>
+                                <div class="detail-value">
+                                    <span class="status-chip status-success" style="font-size: 0.7rem;">
+                                        {{ info.number_of_bags }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-building"></i> Ward
+                                </div>
+                                <div class="detail-value">{{ info.ward }}</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-user-tie"></i> Collector
+                                </div>
+                                <div class="detail-value">
+                                    {% if info.assigned_collector %}
+                                        <div class="status-chip status-success" style="font-size: 0.7rem;">
+                                            <i class="fas fa-user-check"></i>
+                                            {{ info.assigned_collector.first_name }}
+                                        </div>
+                                    {% else %}
+                                        <div class="status-chip status-danger" style="font-size: 0.7rem;">
+                                            <i class="fas fa-user-times"></i>
+                                            Not Assigned
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-group" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+                            <a href="{% url 'super_admin_dashboard:view_waste_profile' info.id %}"
+                               class="action-btn btn-primary">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a href="{% url 'super_admin_dashboard:edit_waste_profile' info.id %}"
+                               class="action-btn btn-warning">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'super_admin_dashboard:delete_waste_profile' info.id %}"
+                               class="action-btn btn-danger"
+                               onclick="return confirm('Are you sure you want to delete this waste profile?');">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3 class="empty-title">No Results Found</h3>
+                        <p class="empty-text">Try adjusting your search criteria or check back later</p>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+
+            <!-- Enhanced Pagination -->
+            <div class="pagination-section">
+                <nav class="pagination-nav">
+                    {% if page_obj.has_previous %}
+                        <a href="?q={{ search_query }}&page=1" class="page-btn">
+                            <i class="fas fa-angle-double-left"></i>
+                            <span>First</span>
+                        </a>
+                        <a href="?q={{ search_query }}&page={{ page_obj.previous_page_number }}" class="page-btn">
+                            <i class="fas fa-angle-left"></i>
+                            <span>Previous</span>
+                        </a>
+                    {% endif %}
+
+                    <div class="page-btn active">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Page {{ page_obj.number }}</span>
+                    </div>
+
+                    {% if page_obj.has_next %}
+                        <a href="?q={{ search_query }}&page={{ page_obj.next_page_number }}" class="page-btn">
+                            <span>Next</span>
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                        <a href="?q={{ search_query }}&page={{ page_obj.paginator.num_pages }}" class="page-btn">
+                            <span>Last</span>
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    {% endif %}
+                </nav>
+
+                <div style="text-align: center; margin-top: 1rem; color: var(--text-light); font-size: 0.9rem;">
+                    Showing {{ page_obj.start_index|default:"0" }}-{{ page_obj.end_index|default:"0" }} of {{ page_obj.paginator.count|default:"0" }} results
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Enhanced Search Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchForm = document.querySelector('.search-form');
+            const searchInput = document.querySelector('.search-input');
+            const searchButton = document.querySelector('.search-button');
+
+            // Add loading state to search
+            searchForm.addEventListener('submit', function() {
+                const buttonText = searchButton.querySelector('span');
+                const buttonIcon = searchButton.querySelector('i');
+
+                buttonIcon.className = 'loading-spinner';
+                buttonText.textContent = 'Searching...';
+                searchButton.disabled = true;
+            });
+
+            // Auto-focus search input on page load
+            if (searchInput && !searchInput.value) {
+                searchInput.focus();
+            }
+
+            // Add smooth scrolling for better UX
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Enhanced phone number interaction
+            const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+            phoneLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // On desktop, copy to clipboard instead of calling
+                    if (window.innerWidth > 768 && navigator.clipboard) {
+                        e.preventDefault();
+                        const phoneNumber = this.href.replace('tel:', '');
+                        navigator.clipboard.writeText(phoneNumber).then(() => {
+                            // Show success feedback
+                            const originalText = this.textContent;
+                            this.textContent = 'Copied!';
+                            this.style.color = 'var(--primary-green)';
+
+                            setTimeout(() => {
+                                this.textContent = originalText;
+                                this.style.color = '';
+                            }, 2000);
+                        });
+                    }
+                });
+            });
+
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Focus search on Ctrl+F or Cmd+F
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
+                    searchInput.focus();
+                    searchInput.select();
+                }
+
+                // Clear search on Escape
+                if (e.key === 'Escape' && document.activeElement === searchInput) {
+                    searchInput.value = '';
+                }
+            });
+
+            // Animate cards on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe mobile cards and table rows
+            const animatedElements = document.querySelectorAll('.mobile-card, .table-body tr');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+
+            // Add ripple effect to buttons
+            function createRipple(event) {
+                const button = event.currentTarget;
+                const circle = document.createElement('span');
+                const diameter = Math.max(button.clientWidth, button.clientHeight);
+                const radius = diameter / 2;
+
+                circle.style.width = circle.style.height = `${diameter}px`;
+                circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+                circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+                circle.classList.add('ripple');
+
+                const ripple = button.getElementsByClassName('ripple')[0];
+                if (ripple) {
+                    ripple.remove();
+                }
+
+                button.appendChild(circle);
+            }
+
+            // Add ripple styles
+            const style = document.createElement('style');
+            style.textContent = `
+                .action-btn, .search-button, .page-btn {
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .ripple {
+                    position: absolute;
+                    border-radius: 50%;
+                    background-color: rgba(255, 255, 255, 0.6);
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                }
+
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Apply ripple effect to buttons
+            const rippleButtons = document.querySelectorAll('.action-btn, .search-button, .page-btn');
+            rippleButtons.forEach(button => {
+                button.addEventListener('click', createRipple);
+            });
+
+            // Progressive loading for better perceived performance
+            const tableRows = document.querySelectorAll('.table-body tr');
+            const mobileCards = document.querySelectorAll('.mobile-card');
+
+            function staggerAnimation(elements, delay = 100) {
+                elements.forEach((element, index) => {
+                    setTimeout(() => {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }, index * delay);
+                });
+            }
+
+            // Apply staggered animation
+            if (tableRows.length > 0) {
+                staggerAnimation(tableRows, 50);
+            }
+            if (mobileCards.length > 0) {
+                staggerAnimation(mobileCards, 100);
+            }
+        });
+
+        // Add performance optimizations
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Optimize scroll events
+        let ticking = false;
+        function updateOnScroll() {
+            // Add scroll-based animations or effects here
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(updateOnScroll);
+                ticking = true;
+            }
+        });
+
+        // Add error handling for network requests
+        window.addEventListener('error', function(e) {
+            console.error('Script error:', e.error);
+        });
+
+        // Service worker registration for PWA capabilities (optional)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                // Uncomment to enable service worker
+                // navigator.serviceWorker.register('/sw.js');
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+

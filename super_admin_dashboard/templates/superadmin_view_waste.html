@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waste Profile Details - SuchiGo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --suchigo-green: #4CAF50;
+            --suchigo-teal: #26A69A;
+            --suchigo-blue: #2196F3;
+            --suchigo-dark-green: #388E3C;
+            --suchigo-light-green: #E8F5E8;
+            --suchigo-gradient: linear-gradient(135deg, #4CAF50 0%, #26A69A 50%, #2196F3 100%);
+            --shadow-soft: 0 4px 20px rgba(76, 175, 80, 0.15);
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --border-radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E8 0%, #E0F2F1 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .header-card {
+            background: var(--suchigo-gradient);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="3" fill="rgba(255,255,255,0.08)"/><circle cx="40" cy="80" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: rotate(0deg) translateX(0px); }
+            100% { transform: rotate(360deg) translateX(20px); }
+        }
+
+        .header-title {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0.5rem 0 0 0;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .profile-header {
+            background: var(--suchigo-gradient);
+            padding: 2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .profile-info h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .profile-info p {
+            margin: 0.25rem 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .details-grid {
+            display: grid;
+            gap: 0;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+        }
+
+        .detail-row:hover {
+            background-color: #fafafa;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            font-weight: 600;
+            color: var(--suchigo-dark-green);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .detail-value {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            min-height: 60px;
+            word-break: break-word;
+        }
+
+        .detail-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--suchigo-teal);
+            font-size: 1.1rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .status-assigned {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-not-assigned {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .pickup-dates-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .pickup-date-item {
+            background: var(--suchigo-light-green);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid #c8e6c9;
+        }
+
+        .pickup-date-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .pickup-date-item .fas {
+            color: var(--suchigo-green);
+        }
+
+        .action-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .btn-suchigo {
+            background: var(--suchigo-gradient);
+            border: none;
+            color: white;
+            padding: 0.875rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .btn-suchigo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+            color: white;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0.5rem;
+            }
+
+            .header-card {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .profile-header {
+                padding: 1.5rem;
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .profile-avatar {
+                width: 70px;
+                height: 70px;
+                font-size: 1.75rem;
+            }
+
+            .detail-row {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-label {
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+                padding: 1rem 1.5rem 0.75rem 1.5rem;
+                background: white;
+                font-size: 0.9rem;
+            }
+
+            .detail-value {
+                padding: 0.75rem 1.5rem 1.5rem 1.5rem;
+                min-height: auto;
+            }
+
+            .action-section {
+                padding: 1.5rem;
+            }
+
+            .btn-suchigo {
+                width: 100%;
+                padding: 1rem 2rem;
+            }
+
+            .header-title {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .profile-info h3 {
+                font-size: 1.25rem;
+            }
+
+            .profile-info p {
+                font-size: 1rem;
+            }
+
+            .detail-label {
+                padding: 0.75rem 1rem 0.5rem 1rem;
+            }
+
+            .detail-value {
+                padding: 0.5rem 1rem 1rem 1rem;
+            }
+
+            .pickup-date-item {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animation for page load */
+        .profile-card {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Smooth transitions */
+        * {
+            transition: all 0.2s ease;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .header-card,
+            .profile-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            .action-section {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header Section -->
+        <div class="header-card">
+            <h1 class="header-title">
+                <i class="fas fa-user-circle"></i>
+                Waste Profile Details
+            </h1>
+            <p class="header-subtitle">Schedule. Collect. Sustain</p>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-info">
+                    <h3>{{ info.user.first_name }} {{ info.user.last_name }}</h3>
+                    <p><i class="fas fa-phone"></i> {{ info.user.contact_number }}</p>
+                </div>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="details-grid">
+                <!-- Address -->
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <div class="detail-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        Address
+                    </div>
+                    <div class="detail-value">{{ info.pickup_address }}</div>
+                </div>
+
+                <!-- State -->
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <div class="detail-icon">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        State
+                    </div>
+                    <div class="detail-value">{{ info.state.name }}</div>
+                </div>
+
+                <!-- District -->
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <div class="detail-icon">
+                            <i class="fas fa-city"></i>
+                        </div>
+                        District
+                    </div>
+                    <div class="detail-value">{{ info.district.name }}</div>
+                </div>
+
+                <!-- Local Body -->
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <div class="detail-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        Local Body
+                    </div>
+                    <div class="detail-value">{{ info.localbody.name }}</div>
+                </div>
+
+                <!-- Ward -->
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <div class="detail-icon">
+                            <i class="fas fa-map"></i>
+                        </div>
+                        Ward
+                    </div>
+                    <div class="detail-value">{{ info.ward }}</div>
+                </div>
+
+                <!-- Waste Type -->
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <div class="detail-icon">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        Waste Type
+                    </div>
+                    <div class="detail-value">{{ info.waste_type }}</div>
+                </div>
+
+                <!-- Number of Bags -->
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <div class="detail-icon">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        Number of Bags
+                    </div>
+                    <div class="detail-value">
+                        <strong>{{ info.number_of_bags }} </strong> -bags
+                    </div>
+                </div>
+
+                <!-- Pickup Dates -->
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <div class="detail-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        Pickup Dates
+                    </div>
+                    <div class="detail-value">
+                        {% if pickup_dates %}
+                            <ul class="pickup-dates-list">
+                                {% for pickup in pickup_dates %}
+                                    <li class="pickup-date-item">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <strong>{{ pickup.localbody_calendar.date }}</strong>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <span class="status-badge status-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Not Selected
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Assigned Collector -->
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <div class="detail-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        Assigned Collector
+                    </div>
+                    <div class="detail-value">
+                        {% if info.assigned_collector %}
+                            <span class="status-badge status-assigned">
+                                <i class="fas fa-check-circle"></i>
+                                {{ info.assigned_collector.first_name }} {{ info.assigned_collector.last_name }}
+                            </span>
+                        {% else %}
+                            <span class="status-badge status-not-assigned">
+                                <i class="fas fa-times-circle"></i>
+                                Not Assigned
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Section -->
+            <div class="action-section">
+                <a href="{% url 'super_admin_dashboard:waste_info_list' %}" class="btn-suchigo">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

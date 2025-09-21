@@ -412,26 +412,23 @@ def view_waste_profile(request, pk):
     })
 
 
+
 @login_required
 def edit_waste_profile(request, pk):
     waste_info = get_object_or_404(CustomerWasteInfo, pk=pk)
 
-    # Get all pickup dates linked to this profile
     existing_pickups = waste_info.customerpickupdate_set.select_related("localbody_calendar")
 
     if request.method == "POST":
         form = WasteProfileForm(request.POST, instance=waste_info)
-
         if form.is_valid():
             waste_info = form.save()
 
-            # Handle calendar date selection (super admin choosing a new pickup date)
             selected_date_id = request.POST.get("selected_date")
             if selected_date_id:
                 try:
                     cal = LocalBodyCalendar.objects.get(pk=int(selected_date_id))
-                    # Update or create pickup date
-                    pickup_obj, created = CustomerPickupDate.objects.update_or_create(
+                    CustomerPickupDate.objects.update_or_create(
                         waste_info=waste_info,
                         user=waste_info.user,
                         defaults={"localbody_calendar": cal}
@@ -444,16 +441,18 @@ def edit_waste_profile(request, pk):
     else:
         form = WasteProfileForm(instance=waste_info)
 
-    # Load available calendar dates for this localbody (so admin can change)
     available_dates = LocalBodyCalendar.objects.filter(localbody=waste_info.localbody).order_by("date")
+    districts = District.objects.all()
+    localbodies = LocalBody.objects.filter(district=waste_info.district)
 
     return render(request, "superadmin_edit_waste.html", {
         "form": form,
         "info": waste_info,
         "existing_pickups": existing_pickups,
-        "available_dates": available_dates
+        "available_dates": available_dates,
+        "districts": districts,
+        "localbodies": localbodies
     })
-
 
 
 
